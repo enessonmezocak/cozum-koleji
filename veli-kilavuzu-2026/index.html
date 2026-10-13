@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Veli Kılavuzu 2026-2027 | Kağıthane Çözüm Koleji</title>
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <script defer src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+  <!-- Swiper 3D Motoru -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <style>
     :root {
@@ -32,7 +33,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: radial-gradient(circle at 50% 30%, #ffffff 0%, #f1f5f9 100%);
       color: var(--text-main);
-      
     }
 
     body {
@@ -41,7 +41,7 @@
       justify-content: space-between;
     }
 
-    /* Üst İnce Şerit */
+    /* Üst İnce Bilgi Şeridi */
     .top-bar {
       height: 42px;
       padding: 0 16px;
@@ -51,7 +51,7 @@
       border-bottom: 1px solid var(--border);
       background: var(--surface);
       backdrop-filter: blur(10px);
-      z-index: 5;
+      z-index: 10;
     }
 
     .badge-title {
@@ -89,39 +89,46 @@
       outline: none;
     }
 
-    /* Çalışma Alanı - Tek Sayfayı Büyütüp Sahneyi Doldurur */
+    /* Çalışma Alanı - Tek Sayfayı Tam Boya Büyütür */
     .workspace {
       flex: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 12px;
-      position: relative;
+      padding: 6px 14px;
       min-height: 0;
+      position: relative;
     }
 
-    .book-wrapper {
+    .book-stage {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 110px);
       position: relative;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
       width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    #book {
-      margin: auto;
-    }
-
-    .page {
       background: #ffffff;
       overflow: hidden;
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-      border-radius: 6px;
     }
 
-    .page img {
+    .swiper-slide img {
       width: 100%;
       height: 100%;
       object-fit: fill;
@@ -135,7 +142,7 @@
       padding: 0 16px 10px;
       display: flex;
       justify-content: center;
-      z-index: 5;
+      z-index: 10;
     }
 
     .toolbar {
@@ -191,38 +198,6 @@
       text-align: center;
       font-variant-numeric: tabular-nums;
     }
-
-    /* Yükleniyor */
-    .loader {
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      z-index: 20;
-      transition: opacity 0.3s ease;
-    }
-
-    .loader.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid #e2e8f0;
-      border-top-color: var(--cozum-red);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 
@@ -242,12 +217,9 @@
   </header>
 
   <main class="workspace">
-    <div class="book-wrapper">
-      <div id="book"></div>
-
-      <div class="loader" id="loader">
-        <div class="spinner"></div>
-        <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Kılavuz hazırlanıyor...</div>
+    <div class="book-stage">
+      <div class="swiper">
+        <div class="swiper-wrapper" id="slide-wrapper"></div>
       </div>
     </div>
   </main>
@@ -265,6 +237,7 @@
     (() => {
       "use strict";
 
+      // 24 sayfalık kesin sıralama
       const pageOrder = [
         1, 4, 2, 3, 5, 6, 8, 7,
         19, 20, 21, 22, 23, 24,
@@ -273,16 +246,16 @@
       ];
 
       const TOTAL = pageOrder.length;
-      const book = document.getElementById("book");
-      const loader = document.getElementById("loader");
+      const slideWrapper = document.getElementById("slide-wrapper");
       const pageNum = document.getElementById("page-num");
       const pageDropdown = document.getElementById("page-dropdown");
       const btnPrev = document.getElementById("btn-prev");
       const btnNext = document.getElementById("btn-next");
       const btnFs = document.getElementById("btn-fs");
 
-      let pageFlip = null;
+      let swiperInstance = null;
 
+      // Dropdown'ı doldur
       pageOrder.forEach((pageFileNum, index) => {
         const option = document.createElement("option");
         option.value = index;
@@ -290,126 +263,62 @@
         pageDropdown.appendChild(option);
       });
 
-      function getUrls(num) {
+      // Görselleri yerleştir
+      pageOrder.forEach((num, index) => {
         const pad = String(num).padStart(2, "0");
-        return [
-          `images/pdfpdf-${pad}.jpg`,
-          `images/pdfpdf-${pad}.jpeg`,
-          `images/pdfpdf-${pad}.JPG`,
-          `images/pdfpdf-${pad}.JPEG`
-        ];
-      }
-
-      function createPageElement(num, index) {
-        const pageDiv = document.createElement("div");
-        pageDiv.className = "page";
-
+        const slide = document.createElement("div");
+        slide.className = "swiper-slide";
+        
         const img = document.createElement("img");
-        img.alt = `Kılavuz Sayfa ${index + 1}`;
-        img.decoding = "async";
+        img.alt = `Veli Kılavuzu Sayfa ${index + 1}`;
+        img.src = `images/pdfpdf-${pad}.jpg`;
+        
+        // Uzantı alternatifi kontrolü
+        img.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = `images/pdfpdf-${pad}.jpeg`;
+          }
+        };
 
-        const urls = getUrls(num);
-        let uIdx = 0;
-
-        function tryLoad() {
-          if (uIdx >= urls.length) return;
-          img.src = urls[uIdx++];
-        }
-
-        img.onerror = tryLoad;
-        tryLoad();
-
-        pageDiv.appendChild(img);
-        return pageDiv;
-      }
-
-      pageOrder.forEach((num, idx) => {
-        book.appendChild(createPageElement(num, idx));
+        slide.appendChild(img);
+        slideWrapper.appendChild(slide);
       });
 
-      function updateControls(index) {
+      function updateUI(index) {
         pageNum.textContent = `${index + 1} / ${TOTAL}`;
         pageDropdown.value = index;
         btnPrev.disabled = index <= 0;
         btnNext.disabled = index >= TOTAL - 1;
       }
 
-      // Kütüphaneyi kesin olarak TEK SAYFA moduna kilitleyen fonksiyon
-      function enforceSinglePage(flipInstance) {
-        if (!flipInstance) return;
-        flipInstance.getOrientation = () => "portrait";
-
-        const targets = [flipInstance];
-        for (const k in flipInstance) {
-          if (flipInstance[k] && typeof flipInstance[k] === "object") targets.push(flipInstance[k]);
-        }
-        if (flipInstance.ui) {
-          for (const k in flipInstance.ui) {
-            if (flipInstance.ui[k] && typeof flipInstance.ui[k] === "object") targets.push(flipInstance.ui[k]);
+      // 3D Flip Motorunu Başlat
+      swiperInstance = new Swiper('.swiper', {
+        effect: 'flip',
+        grabCursor: true,
+        speed: 650,
+        flipEffect: {
+          slideShadows: true,
+          limitRotation: true
+        },
+        keyboard: {
+          enabled: true
+        },
+        on: {
+          init: function() {
+            updateUI(this.activeIndex);
+          },
+          slideChange: function() {
+            updateUI(this.activeIndex);
           }
         }
+      });
 
-        targets.forEach(target => {
-          try {
-            if (typeof target.getOrientation === "function") {
-              target.getOrientation = () => "portrait";
-            }
-            Object.defineProperty(target, "orientation", {
-              get: () => "portrait",
-              set: () => {},
-              configurable: true
-            });
-          } catch (e) {}
-        });
-      }
-
-      function initPageFlip() {
-        if (!window.St || !window.St.PageFlip) return;
-
-        pageFlip = new St.PageFlip(book, {
-          width: 900,
-          height: 506,
-          size: "stretch",
-          minWidth: 320,
-          maxWidth: 1200,
-          minHeight: 180,
-          maxHeight: 700,
-          maxShadowOpacity: 0.25,
-          showCover: false,
-          mobileScrollSupport: false,
-          flippingTime: 550,
-          usePortrait: true,
-          startPage: 0
-        });
-
-        // Motor sayfaları yüklemeden hemen önce portrait kilidini çakıyoruz
-        enforceSinglePage(pageFlip);
-
-        pageFlip.loadFromHTML(book.querySelectorAll(".page"));
-
-        enforceSinglePage(pageFlip);
-
-        pageFlip.on("flip", (e) => {
-          updateControls(e.data);
-        });
-
-        pageFlip.on("init", () => {
-          enforceSinglePage(pageFlip);
-          loader.classList.add("hidden");
-          updateControls(pageFlip.getCurrentPageIndex());
-        });
-
-        setTimeout(() => {
-          enforceSinglePage(pageFlip);
-          loader.classList.add("hidden");
-        }, 800);
-      }
-
-      btnPrev.addEventListener("click", () => pageFlip && pageFlip.flipPrev());
-      btnNext.addEventListener("click", () => pageFlip && pageFlip.flipNext());
+      // Kontroller
+      btnPrev.addEventListener("click", () => swiperInstance && swiperInstance.slidePrev());
+      btnNext.addEventListener("click", () => swiperInstance && swiperInstance.slideNext());
 
       pageDropdown.addEventListener("change", (e) => {
-        if (pageFlip) pageFlip.flip(parseInt(e.target.value, 10));
+        if (swiperInstance) swiperInstance.slideTo(parseInt(e.target.value, 10));
       });
 
       btnFs.addEventListener("click", () => {
@@ -419,18 +328,6 @@
           document.exitFullscreen().catch(() => {});
         }
       });
-
-      document.addEventListener("keydown", (e) => {
-        if (!pageFlip) return;
-        if (e.key === "ArrowRight") pageFlip.flipNext();
-        if (e.key === "ArrowLeft") pageFlip.flipPrev();
-      });
-
-      window.addEventListener("resize", () => {
-        if (pageFlip) enforceSinglePage(pageFlip);
-      });
-
-      window.addEventListener("load", initPageFlip);
     })();
   </script>
 </body>
