@@ -41,7 +41,7 @@
       justify-content: space-between;
     }
 
-    /* Üst İnce Bilgi Şeridi */
+    /* Üst Bilgi Şeridi */
     .top-bar {
       height: 42px;
       padding: 0 16px;
@@ -89,7 +89,7 @@
       outline: none;
     }
 
-    /* Çalışma Alanı */
+    /* Sahne Alanı */
     .workspace {
       flex: 1;
       width: 100%;
@@ -132,7 +132,6 @@
       height: 100%;
     }
 
-    /* Yumuşak Sayfa Geçiş Eğrisi */
     .swiper, .swiper-wrapper, .swiper-slide {
       transition-timing-function: cubic-bezier(0.25, 1, 0.35, 1) !important;
     }
@@ -146,13 +145,15 @@
       background: #ffffff;
       overflow: hidden;
       transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
-    /* Kâğıt Gölgesini Yumuşatma */
-    .swiper-slide-shadow,
-    .swiper-slide-shadow-left,
-    .swiper-slide-shadow-right {
-      background: linear-gradient(to right, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.02)) !important;
+    /* Hareket bittiğinde aktif olmayan tüm sayfaların hayalet izini tamamen yok eder */
+    .swiper:not(.swiper-animating) .swiper-slide:not(.swiper-slide-active) {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
     }
 
     .swiper-zoom-container {
@@ -346,7 +347,7 @@
         pageDropdown.appendChild(option);
       });
 
-      // Slaytları Zoom Konteyneri ile oluştur
+      // Slaytları oluştur
       pageOrder.forEach((num, index) => {
         const pad = String(num).padStart(2, "0");
         const slide = document.createElement("div");
@@ -377,10 +378,10 @@
         btnNext.disabled = index >= TOTAL - 1;
       }
 
-      // Yumuşatılmış Defter Sayfası Çevirme Motoru
+      // İzsiz & Sıfır Saydamlık Kâğıt Geçişi
       swiperInstance = new Swiper('.swiper', {
         effect: 'creative',
-        speed: 850, // Akıcı, yavaş ve kadifemsi süre
+        speed: 800,
         grabCursor: true,
         zoom: {
           maxRatio: 3,
@@ -389,21 +390,21 @@
         },
         creativeEffect: {
           perspective: true,
-          limitProgress: 2,
-          shadowPerProgress: true,
+          limitProgress: 1, // Sadece bir önceki/sonraki sayfayı hesaplar, art arda binmeyi engeller
+          shadowPerProgress: false,
           prev: {
-            shadow: true,
+            shadow: false,
             origin: 'left center',
-            translate: ['-10%', 0, -15],
-            rotate: [0, -52, 0], // Tahta gibi dikilmez, kâğıt gibi bükülür
-            opacity: 0.1
+            translate: ['-15%', 0, -20],
+            rotate: [0, -55, 0],
+            opacity: 0 // Kesinlikle 0: Asla iz bırakmaz
           },
           next: {
-            shadow: true,
+            shadow: false,
             origin: 'right center',
-            translate: ['10%', 0, -15],
-            rotate: [0, 52, 0],
-            opacity: 0.1
+            translate: ['15%', 0, -20],
+            rotate: [0, 55, 0],
+            opacity: 0 // Kesinlikle 0: Asla iz bırakmaz
           }
         },
         keyboard: {
