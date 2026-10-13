@@ -89,7 +89,7 @@
       outline: none;
     }
 
-    /* Çalışma Alanı - Tek Sayfayı Tam Boya Büyütür */
+    /* Çalışma Alanı */
     .workspace {
       flex: 1;
       width: 100%;
@@ -107,10 +107,24 @@
       aspect-ratio: 16 / 9;
       max-height: calc(100vh - 110px);
       position: relative;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.16);
       border-radius: 8px;
       overflow: hidden;
       background: #ffffff;
+      perspective: 2500px; /* 3D derinlik */
+    }
+
+    /* Sol Kenar Defter Sırtı / Cilt Dikiş Gölgesi */
+    .book-stage::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 26px;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+      z-index: 25;
+      pointer-events: none;
     }
 
     .swiper {
@@ -126,6 +140,7 @@
       justify-content: center;
       background: #ffffff;
       overflow: hidden;
+      transform-style: preserve-3d;
     }
 
     .swiper-slide img {
@@ -237,7 +252,7 @@
     (() => {
       "use strict";
 
-      // 24 sayfalık kesin sıralama
+      // Kesin 24 sayfalık sıralama
       const pageOrder = [
         1, 4, 2, 3, 5, 6, 8, 7,
         19, 20, 21, 22, 23, 24,
@@ -255,7 +270,6 @@
 
       let swiperInstance = null;
 
-      // Dropdown'ı doldur
       pageOrder.forEach((pageFileNum, index) => {
         const option = document.createElement("option");
         option.value = index;
@@ -263,7 +277,6 @@
         pageDropdown.appendChild(option);
       });
 
-      // Görselleri yerleştir
       pageOrder.forEach((num, index) => {
         const pad = String(num).padStart(2, "0");
         const slide = document.createElement("div");
@@ -273,7 +286,6 @@
         img.alt = `Veli Kılavuzu Sayfa ${index + 1}`;
         img.src = `images/pdfpdf-${pad}.jpg`;
         
-        // Uzantı alternatifi kontrolü
         img.onerror = function() {
           if (this.src.endsWith(".jpg")) {
             this.src = `images/pdfpdf-${pad}.jpeg`;
@@ -291,14 +303,26 @@
         btnNext.disabled = index >= TOTAL - 1;
       }
 
-      // 3D Flip Motorunu Başlat
+      // Defter Sayfası Çevirme Motoru (Sol Sırttan Katlama)
       swiperInstance = new Swiper('.swiper', {
-        effect: 'flip',
+        effect: 'creative',
+        speed: 700,
         grabCursor: true,
-        speed: 650,
-        flipEffect: {
-          slideShadows: true,
-          limitRotation: true
+        creativeEffect: {
+          perspective: true,
+          prev: {
+            shadow: true,
+            origin: 'left center',        // Dönme ekseni tam sol kenar (defter sırtı)
+            translate: [0, 0, -10],
+            rotate: [0, -95, 0],          // Sola doğru sayfayı katlar
+            opacity: 0.15
+          },
+          next: {
+            shadow: true,
+            origin: 'left center',
+            translate: [0, 0, -1],         // Alttaki sayfa sırtta hazır bekler
+            opacity: 1
+          }
         },
         keyboard: {
           enabled: true
@@ -313,7 +337,6 @@
         }
       });
 
-      // Kontroller
       btnPrev.addEventListener("click", () => swiperInstance && swiperInstance.slidePrev());
       btnNext.addEventListener("click", () => swiperInstance && swiperInstance.slideNext());
 
