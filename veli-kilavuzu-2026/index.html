@@ -132,8 +132,9 @@
       height: 100%;
     }
 
+    /* Yumuşak ve Ağırbaşlı Yaylanma Eğrisi */
     .swiper, .swiper-wrapper, .swiper-slide {
-      transition-timing-function: cubic-bezier(0.25, 1, 0.35, 1) !important;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
 
     .swiper-slide {
@@ -149,7 +150,7 @@
       -webkit-backface-visibility: hidden;
     }
 
-    /* Hareket bittiğinde aktif olmayan tüm sayfaların hayalet izini tamamen yok eder */
+    /* Geçiş Bittiğinde Diğer Sayfaları Temiz Tutma */
     .swiper:not(.swiper-animating) .swiper-slide:not(.swiper-slide-active) {
       opacity: 0 !important;
       visibility: hidden !important;
@@ -378,10 +379,10 @@
         btnNext.disabled = index >= TOTAL - 1;
       }
 
-      // İzsiz & Sıfır Saydamlık Kâğıt Geçişi
+      // 1200ms Yumuşak ve Ağırbaşlı Sayfa Çevirme
       swiperInstance = new Swiper('.swiper', {
         effect: 'creative',
-        speed: 800,
+        speed: 1200, // Sakin ve akıcı geçiş hızı
         grabCursor: true,
         zoom: {
           maxRatio: 3,
@@ -390,21 +391,21 @@
         },
         creativeEffect: {
           perspective: true,
-          limitProgress: 1, // Sadece bir önceki/sonraki sayfayı hesaplar, art arda binmeyi engeller
+          limitProgress: 1,
           shadowPerProgress: false,
           prev: {
             shadow: false,
             origin: 'left center',
-            translate: ['-15%', 0, -20],
-            rotate: [0, -55, 0],
-            opacity: 0 // Kesinlikle 0: Asla iz bırakmaz
+            translate: ['-12%', 0, -20],
+            rotate: [0, -50, 0],
+            opacity: 0
           },
           next: {
             shadow: false,
             origin: 'right center',
-            translate: ['15%', 0, -20],
-            rotate: [0, 55, 0],
-            opacity: 0 // Kesinlikle 0: Asla iz bırakmaz
+            translate: ['12%', 0, -20],
+            rotate: [0, 50, 0],
+            opacity: 0
           }
         },
         keyboard: {
