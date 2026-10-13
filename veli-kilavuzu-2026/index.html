@@ -88,7 +88,7 @@
       outline: none;
     }
 
-    /* Kitap Alanı - Tek Sayfayı Tam Boya Genişletir */
+    /* Çalışma Alanı - Tek Sayfayı Büyütüp Sahneyi Doldurur */
     .workspace {
       flex: 1;
       width: 100%;
@@ -116,8 +116,8 @@
     .page {
       background: #ffffff;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      border-radius: 4px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+      border-radius: 6px;
     }
 
     .page img {
@@ -191,7 +191,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Yükleniyor Katmanı */
+    /* Yükleniyor */
     .loader {
       position: absolute;
       inset: 0;
@@ -333,6 +333,35 @@
         btnNext.disabled = index >= TOTAL - 1;
       }
 
+      // Kütüphaneyi kesin olarak TEK SAYFA moduna kilitleyen fonksiyon
+      function enforceSinglePage(flipInstance) {
+        if (!flipInstance) return;
+        flipInstance.getOrientation = () => "portrait";
+
+        const targets = [flipInstance];
+        for (const k in flipInstance) {
+          if (flipInstance[k] && typeof flipInstance[k] === "object") targets.push(flipInstance[k]);
+        }
+        if (flipInstance.ui) {
+          for (const k in flipInstance.ui) {
+            if (flipInstance.ui[k] && typeof flipInstance.ui[k] === "object") targets.push(flipInstance.ui[k]);
+          }
+        }
+
+        targets.forEach(target => {
+          try {
+            if (typeof target.getOrientation === "function") {
+              target.getOrientation = () => "portrait";
+            }
+            Object.defineProperty(target, "orientation", {
+              get: () => "portrait",
+              set: () => {},
+              configurable: true
+            });
+          } catch (e) {}
+        });
+      }
+
       function initPageFlip() {
         if (!window.St || !window.St.PageFlip) return;
 
@@ -343,36 +372,36 @@
           minWidth: 320,
           maxWidth: 1200,
           minHeight: 180,
-          maxHeight: 675,
+          maxHeight: 700,
           maxShadowOpacity: 0.25,
-          showCover: false, // Tek sayfada kapak ayrımı yapmaz
+          showCover: false,
           mobileScrollSupport: false,
-          flippingTime: 500,
-          usePortrait: true
+          flippingTime: 550,
+          usePortrait: true,
+          startPage: 0
         });
 
-        // Kütüphaneyi kesin olarak TEK SAYFA (portrait) moduna kilitler
-        if (pageFlip.render) {
-          pageFlip.render.calculateOrientation = () => "portrait";
-          if (typeof pageFlip.render.setOrientation === "function") {
-            pageFlip.render.setOrientation("portrait");
-          }
-        }
+        // Motor sayfaları yüklemeden hemen önce portrait kilidini çakıyoruz
+        enforceSinglePage(pageFlip);
 
         pageFlip.loadFromHTML(book.querySelectorAll(".page"));
+
+        enforceSinglePage(pageFlip);
 
         pageFlip.on("flip", (e) => {
           updateControls(e.data);
         });
 
         pageFlip.on("init", () => {
+          enforceSinglePage(pageFlip);
           loader.classList.add("hidden");
           updateControls(pageFlip.getCurrentPageIndex());
         });
 
         setTimeout(() => {
+          enforceSinglePage(pageFlip);
           loader.classList.add("hidden");
-        }, 1200);
+        }, 800);
       }
 
       btnPrev.addEventListener("click", () => pageFlip && pageFlip.flipPrev());
@@ -394,6 +423,10 @@
         if (!pageFlip) return;
         if (e.key === "ArrowRight") pageFlip.flipNext();
         if (e.key === "ArrowLeft") pageFlip.flipPrev();
+      });
+
+      window.addEventListener("resize", () => {
+        if (pageFlip) enforceSinglePage(pageFlip);
       });
 
       window.addEventListener("load", initPageFlip);
