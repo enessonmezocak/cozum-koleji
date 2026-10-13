@@ -1,123 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111827">
-  <meta name="description" content="Kağıthane Çözüm Koleji 2026-2027 Veli Kılavuzu">
-
-  <title>Veli Kılavuzu | Kağıthane Çözüm Koleji</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Veli Kılavuzu 2026-2027 | Kağıthane Çözüm Koleji</title>
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <script defer src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
 
   <style>
     :root {
-      --bg: #111827;
-      --panel: #1b2536;
-      --line: rgba(255,255,255,.11);
-      --text: #f8fafc;
-      --muted: #9caec5;
-      --red: #df3545;
+      --bg: #f8fafc;
+      --surface: rgba(255, 255, 255, 0.92);
+      --border: rgba(226, 232, 240, 0.9);
+      --cozum-red: #c9182b;
+      --cozum-red-hover: #a51323;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --shadow-book: 0 15px 35px -10px rgba(0, 0, 0, 0.18), 0 0 1px rgba(0, 0, 0, 0.1);
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     html, body {
-      margin: 0;
       width: 100%;
-      min-height: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f5f9 100%);
+      color: var(--text-main);
     }
 
     body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
-      color: var(--text);
-      font-family: Inter, "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(ellipse at 50% 43%, #29384e 0%, #182336 45%, #0c1320 100%);
+      justify-content: space-between;
     }
 
-    button {
-      font: inherit;
-    }
-
-    .header {
-      height: 76px;
-      flex: 0 0 auto;
+    /* Üst İnce Bilgi Şeridi */
+    .top-bar {
+      height: 44px;
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 12px 28px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(13, 20, 33, .75);
-      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      z-index: 5;
     }
 
-    .brand {
+    .badge-title {
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-width: 0;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
     }
 
-    .brand-logo {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      background: linear-gradient(145deg, #f04b58, #bf1e32);
-      box-shadow: 0 5px 20px #df354530;
-      font-size: 24px;
-      font-weight: 900;
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cozum-red);
     }
 
-    .brand-title {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 750;
-      letter-spacing: -.3px;
-    }
-
-    .brand-subtitle {
-      margin: 5px 0 0;
-      color: var(--muted);
+    .jump-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
+      color: var(--text-muted);
     }
 
-    .year {
-      padding: 9px 13px;
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      color: #dbe5f2;
+    .page-select {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: var(--text-main);
+      padding: 4px 8px;
+      border-radius: 6px;
       font-size: 12px;
-      white-space: nowrap;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
     }
 
+    /* Kitap Çalışma Alanı */
     .workspace {
-      flex: 1 1 auto;
-      min-height: 0;
+      flex: 1;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px 20px 4px;
+      padding: 10px 16px;
+      position: relative;
+      min-height: 0;
     }
 
-    .book-stage {
+    .book-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -127,36 +115,100 @@
       margin: auto;
     }
 
-    /* Kâğıt görünümü */
+    /* Sayfalar ve Dergi Efekti */
     .page {
+      background: #ffffff;
       overflow: hidden;
-      background: #fffdf8;
-      box-shadow: 0 3px 12px #00000018;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
     }
 
     .page img {
-      display: block;
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      background: #fffdf8;
+      object-fit: fill;
+      display: block;
       user-select: none;
       -webkit-user-drag: none;
     }
 
+    /* Alt Yüzen Kontrol Paneli */
+    .toolbar-container {
+      padding: 0 16px 12px;
+      display: flex;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+    }
+
+    .btn {
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #f1f5f9;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn.primary {
+      background: var(--cozum-red);
+      color: #ffffff;
+    }
+
+    .btn.primary:hover:not(:disabled) {
+      background: var(--cozum-red-hover);
+    }
+
+    .page-indicator {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      min-width: 90px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Yükleme Ekranı */
     .loader {
       position: absolute;
-      z-index: 10;
       inset: 0;
+      background: rgba(255, 255, 255, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 15px;
-      text-align: center;
-      color: #c4d0df;
-      background: rgba(17, 24, 39, .96);
-      transition: opacity .25s ease;
+      gap: 12px;
+      z-index: 20;
+      transition: opacity 0.3s ease;
     }
 
     .loader.hidden {
@@ -165,274 +217,100 @@
     }
 
     .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid #ffffff20;
-      border-top-color: var(--red);
+      width: 38px;
+      height: 38px;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--cozum-red);
       border-radius: 50%;
-      animation: spin .8s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    .loading-message {
+    .loading-text {
       font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
-    .loading-error {
-      max-width: 520px;
-      padding: 14px;
-      color: #fecaca;
-      font-size: 12px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-    }
-
-    .toolbar {
-      width: min(760px, calc(100% - 32px));
-      min-height: 68px;
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin: 8px auto 12px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(27, 37, 54, .95);
-      box-shadow: 0 16px 45px #00000025;
-    }
-
-    .btn {
-      min-height: 42px;
-      padding: 0 15px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      background: #273449;
-      color: #f8fafc;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 650;
-      white-space: nowrap;
-      transition: background .2s, transform .2s;
-    }
-
-    .btn:hover:not(:disabled) {
-      background: #384960;
-    }
-
-    .btn:active:not(:disabled) {
-      transform: scale(.97);
-    }
-
-    .btn.primary {
-      border-color: transparent;
-      background: var(--red);
-    }
-
-    .btn.primary:hover:not(:disabled) {
-      background: #c72c3b;
-    }
-
-    .btn:disabled {
-      opacity: .35;
-      cursor: not-allowed;
-    }
-
-    .page-counter {
-      min-width: 112px;
-      text-align: center;
-      color: #f8fafc;
-      font-size: 13px;
-      font-weight: 750;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .page-counter small {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 400;
-    }
-
-    .progress {
-      width: min(360px, 60%);
-      height: 3px;
-      margin: 0 auto 12px;
-      overflow: hidden;
-      border-radius: 5px;
-      background: #ffffff15;
-    }
-
-    .progress-fill {
-      width: 0;
-      height: 100%;
-      background: var(--red);
-      transition: width .3s ease;
-    }
-
-    .footer {
-      flex: 0 0 auto;
-      padding: 0 12px 9px;
-      text-align: center;
-      color: #8292a9;
-      font-size: 10px;
-    }
-
-    button:focus-visible {
-      outline: 2px solid #fca5a5;
-      outline-offset: 3px;
-    }
-
-    @media (max-width: 600px) {
-      .header {
-        height: 64px;
-        padding: 9px 12px;
+    @media (max-width: 650px) {
+      .top-bar {
+        padding: 0 10px;
+        height: 38px;
       }
-
-      .brand {
-        gap: 9px;
-      }
-
-      .brand-logo {
-        width: 37px;
-        height: 37px;
-        border-radius: 11px;
-        font-size: 20px;
-      }
-
-      .brand-title {
-        font-size: 12px;
-      }
-
-      .brand-subtitle {
-        font-size: 10px;
-      }
-
-      .year {
-        padding: 7px 8px;
-        font-size: 10px;
-      }
-
-      .workspace {
-        padding: 8px 3px 2px;
-      }
-
-      .toolbar {
-        width: calc(100% - 16px);
-        min-height: 58px;
-        gap: 5px;
-        margin: 6px auto 9px;
-        padding: 7px 5px;
-        border-radius: 14px;
-      }
-
-      .btn {
-        min-height: 39px;
-        padding: 0 9px;
-        gap: 4px;
-        font-size: 11px;
-      }
-
-      .page-counter {
-        min-width: 72px;
-        font-size: 11px;
-      }
-
-      .page-counter small {
-        font-size: 9px;
-      }
-
-      .fullscreen-label {
+      .badge-title span {
         display: none;
       }
-
-      .footer {
-        font-size: 9px;
-        padding-bottom: 6px;
+      .toolbar {
+        padding: 4px 8px;
+        gap: 6px;
       }
-
-      .progress {
-        margin-bottom: 7px;
+      .btn {
+        padding: 6px 10px;
+        font-size: 12px;
       }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
+      .page-indicator {
+        font-size: 12px;
+        min-width: 70px;
       }
     }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <div class="brand">
-      <div class="brand-logo" aria-hidden="true">Ç</div>
-      <div>
-        <h1 class="brand-title">Kağıthane Çözüm Koleji</h1>
-        <p class="brand-subtitle">Dijital Veli Kılavuzu</p>
-      </div>
+
+  <!-- Üst İnce Başlık & Hızlı Sayfa Seçici -->
+  <header class="top-bar">
+    <div class="badge-title">
+      <span class="badge-dot"></span>
+      <strong>Kağıthane Çözüm Koleji</strong>
+      <span>· 2026-2027 Veli Kılavuzu</span>
     </div>
 
-    <div class="year">2026 – 2027</div>
+    <div class="jump-wrapper">
+      <label for="page-dropdown">Git:</label>
+      <select id="page-dropdown" class="page-select"></select>
+    </div>
   </header>
 
+  <!-- Flipbook Sahnesi -->
   <main class="workspace">
-    <section class="book-stage" aria-label="Sayfa çevirmeli veli kılavuzu">
+    <div class="book-wrapper">
       <div id="book"></div>
 
-      <div class="loader" id="loader" role="status">
-        <div class="spinner" id="spinner"></div>
-        <div class="loading-message" id="loading-message">
-          Kılavuz hazırlanıyor...
-        </div>
-        <div class="loading-error" id="loading-error" hidden></div>
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-msg">Sayfalar hazırlanıyor...</div>
       </div>
-    </section>
+    </div>
   </main>
 
-  <div class="progress" aria-hidden="true">
-    <div class="progress-fill" id="progress-fill"></div>
+  <!-- Alt Kontrol Paneli -->
+  <div class="toolbar-container">
+    <nav class="toolbar" aria-label="Kitap Gezintisi">
+      <button class="btn" id="btn-prev" disabled>
+        ‹ Önceki
+      </button>
+
+      <div class="page-indicator" id="page-num">1 / 24</div>
+
+      <button class="btn primary" id="btn-next">
+        Sonraki ›
+      </button>
+
+      <button class="btn" id="btn-fs" title="Tam Ekran">
+        ⛶
+      </button>
+    </nav>
   </div>
-
-  <nav class="toolbar" aria-label="Kitap kontrolleri">
-    <button class="btn" id="prev" type="button" disabled>
-      ‹ <span>Önceki</span>
-    </button>
-
-    <div class="page-counter" id="page-counter" aria-live="polite">
-      Hazırlanıyor...
-      <small>24 sayfa</small>
-    </div>
-
-    <button class="btn primary" id="next" type="button" disabled>
-      <span>Sonraki</span> ›
-    </button>
-
-    <button class="btn" id="fullscreen" type="button" aria-label="Tam ekran">
-      ⛶ <span class="fullscreen-label">Tam ekran</span>
-    </button>
-  </nav>
-
-  <footer class="footer">
-    KAĞITHANE ÇÖZÜM KOLEJİ · 2026–2027 EĞİTİM ÖĞRETİM YILI
-  </footer>
 
   <script>
     (() => {
       "use strict";
 
-      // Sıralama kesinlikle bu dizideki gibidir.
+      // Belirlediğiniz 24 sayfalık kesin sıralama
       const pageOrder = [
         1, 4, 2, 3, 5, 6, 8, 7,
         19, 20, 21, 22, 23, 24,
@@ -443,225 +321,128 @@
       const TOTAL = pageOrder.length;
       const book = document.getElementById("book");
       const loader = document.getElementById("loader");
-      const spinner = document.getElementById("spinner");
-      const loadingMessage = document.getElementById("loading-message");
-      const loadingError = document.getElementById("loading-error");
-      const counter = document.getElementById("page-counter");
-      const progress = document.getElementById("progress-fill");
-      const prevButton = document.getElementById("prev");
-      const nextButton = document.getElementById("next");
-      const fullscreenButton = document.getElementById("fullscreen");
+      const pageNum = document.getElementById("page-num");
+      const pageDropdown = document.getElementById("page-dropdown");
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
+      const btnFs = document.getElementById("btn-fs");
 
       let pageFlip = null;
-      let resizeTimer = null;
-      let errors = [];
 
-      // Dosyaların jpg/jpeg uzantı farkını otomatik kontrol et.
-      // Dosya adlarında 01, 02 gibi sıfır dolgusu korunur.
-      function candidates(number) {
-        const base = "pdfpdf-" + String(number).padStart(2, "0");
+      // Hızlı sayfa seçici dropdown'ı doldur
+      pageOrder.forEach((pageFileNum, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `Sayfa ${index + 1}`;
+        pageDropdown.appendChild(option);
+      });
+
+      // Farklı dosya uzantılarını test etme (.jpg, .jpeg, büyük/küçük harf)
+      function getUrls(num) {
+        const pad = String(num).padStart(2, "0");
         return [
-          `images/${base}.jpg`,
-          `images/${base}.jpeg`,
-          `images/${base}.JPG`,
-          `images/${base}.JPEG`
+          `images/pdfpdf-${pad}.jpg`,
+          `images/pdfpdf-${pad}.jpeg`,
+          `images/pdfpdf-${pad}.JPG`,
+          `images/pdfpdf-${pad}.JPEG`
         ];
       }
 
-      function createPage(number, index) {
-        const page = document.createElement("div");
-        page.className = "page";
-
+      function createPageElement(num, index) {
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "page";
         if (index === 0 || index === TOTAL - 1) {
-          page.dataset.density = "hard";
+          pageDiv.dataset.density = "hard"; // Ön ve arka kapak
         }
 
         const img = document.createElement("img");
-        img.alt = `Veli kılavuzu sayfa ${number}`;
+        img.alt = `Kılavuz Sayfa ${index + 1}`;
         img.decoding = "async";
-        img.draggable = false;
 
-        if (index < 4) {
-          img.fetchPriority = "high";
+        const urls = getUrls(num);
+        let uIdx = 0;
+
+        function tryLoad() {
+          if (uIdx >= urls.length) return;
+          img.src = urls[uIdx++];
         }
 
-        const urls = candidates(number);
-        let candidateIndex = 0;
-        let resolved = false;
+        img.onerror = tryLoad;
+        tryLoad();
 
-        function tryNext() {
-          if (resolved) return;
-
-          if (candidateIndex >= urls.length) {
-            errors.push(number);
-            img.alt = `Görsel bulunamadı: pdfpdf-${String(number).padStart(2, "0")}`;
-            img.style.background = "#fff1f2";
-            img.style.padding = "16px";
-            img.style.objectFit = "contain";
-            img.title = "GitHub images klasöründeki dosya adını kontrol edin.";
-            img.dataset.failed = "true";
-            updateLoadingStatus();
-            return;
-          }
-
-          img.src = urls[candidateIndex++];
-        }
-
-        img.onload = () => {
-          resolved = true;
-          updateLoadingStatus();
-        };
-
-        img.onerror = tryNext;
-        img.src = urls[candidateIndex++];
-
-        page.appendChild(img);
-        return page;
+        pageDiv.appendChild(img);
+        return pageDiv;
       }
 
-      function updateLoadingStatus() {
-        const imgs = book.querySelectorAll("img");
-        const loaded = [...imgs].filter(
-          img => img.complete && img.naturalWidth > 0
-        ).length;
-
-        loadingMessage.textContent =
-          `Sayfalar hazırlanıyor: ${loaded}/${TOTAL}`;
-
-        if (errors.length) {
-          loadingError.hidden = false;
-          loadingError.textContent =
-            "Bulunamayan dosya numaraları: " +
-            [...new Set(errors)].join(", ") +
-            ". GitHub deposundaki images klasörünü kontrol edin.";
-        }
-      }
-
-      function hideLoader() {
-        loader.classList.add("hidden");
-      }
-
-      function showError(message) {
-        spinner.hidden = true;
-        loadingMessage.textContent = "Kılavuz açılamadı";
-        loadingError.hidden = false;
-        loadingError.textContent = message;
-      }
-
-      function updateUI(index) {
-        const current = Math.max(0, Math.min(index, TOTAL - 1));
-
-        counter.innerHTML =
-          `Sayfa ${current + 1} / ${TOTAL}` +
-          `<small>2026 – 2027 · Veli Kılavuzu</small>`;
-
-        progress.style.width = ((current + 1) / TOTAL * 100) + "%";
-
-        prevButton.disabled = current <= 0;
-        nextButton.disabled = current >= TOTAL - 1;
-      }
-
-      function initBook() {
-        if (!window.St || !window.St.PageFlip) {
-          showError(
-            "Sayfa çevirme kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenileyin."
-          );
-          return;
-        }
-
-        try {
-          pageFlip = new St.PageFlip(book, {
-            width: 900,
-            height: 506,
-            size: "stretch",
-            minWidth: 280,
-            maxWidth: 1200,
-            minHeight: 157,
-            maxHeight: 675,
-            autoSize: true,
-            showCover: true,
-            usePortrait: true,
-            mobileScrollSupport: false,
-            flippingTime: 700,
-            maxShadowOpacity: 0.30,
-            drawShadow: true,
-            startPage: 0,
-            startZIndex: 0,
-            clickEventForward: true,
-            disableFlipByClick: false,
-            swipeDistance: 30,
-            showPageCorners: true
-          });
-
-          pageFlip.loadFromHTML(book.querySelectorAll(".page"));
-
-          pageFlip.on("flip", event => {
-            updateUI(event.data);
-          });
-
-          pageFlip.on("init", () => {
-            updateUI(pageFlip.getCurrentPageIndex());
-            hideLoader();
-          });
-
-          // init olayı sürüme göre farklı zamanda gelebilir.
-          requestAnimationFrame(() => {
-            if (pageFlip) {
-              updateUI(pageFlip.getCurrentPageIndex());
-              hideLoader();
-            }
-          });
-
-        } catch (error) {
-          console.error("PageFlip başlatma hatası:", error);
-          showError("Kitap oluşturulamadı. Tarayıcı konsolunu kontrol edin.");
-        }
-      }
-
-      // Önce sayfa elemanlarını ve görsel adreslerini oluştur.
-      pageOrder.forEach((number, index) => {
-        book.appendChild(createPage(number, index));
+      pageOrder.forEach((num, idx) => {
+        book.appendChild(createPageElement(num, idx));
       });
 
-      prevButton.addEventListener("click", () => {
-        if (pageFlip) pageFlip.flipPrev();
+      function updateControls(index) {
+        pageNum.textContent = `${index + 1} / ${TOTAL}`;
+        pageDropdown.value = index;
+        btnPrev.disabled = index <= 0;
+        btnNext.disabled = index >= TOTAL - 1;
+      }
+
+      function initPageFlip() {
+        if (!window.St || !window.St.PageFlip) return;
+
+        pageFlip = new St.PageFlip(book, {
+          width: 900,
+          height: 506,
+          size: "stretch",
+          minWidth: 320,
+          maxWidth: 1200,
+          minHeight: 180,
+          maxHeight: 675,
+          maxShadowOpacity: 0.25,
+          showCover: true,
+          mobileScrollSupport: false,
+          flippingTime: 600,
+          usePortrait: true
+        });
+
+        pageFlip.loadFromHTML(book.querySelectorAll(".page"));
+
+        pageFlip.on("flip", (e) => {
+          updateControls(e.data);
+        });
+
+        pageFlip.on("init", () => {
+          loader.classList.add("hidden");
+          updateControls(pageFlip.getCurrentPageIndex());
+        });
+
+        setTimeout(() => {
+          loader.classList.add("hidden");
+        }, 1200);
+      }
+
+      // Buton aksiyonları
+      btnPrev.addEventListener("click", () => pageFlip && pageFlip.flipPrev());
+      btnNext.addEventListener("click", () => pageFlip && pageFlip.flipNext());
+
+      pageDropdown.addEventListener("change", (e) => {
+        if (pageFlip) pageFlip.flip(parseInt(e.target.value, 10));
       });
 
-      nextButton.addEventListener("click", () => {
-        if (pageFlip) pageFlip.flipNext();
-      });
-
-      fullscreenButton.addEventListener("click", async () => {
-        try {
-          if (!document.fullscreenElement) {
-            await document.documentElement.requestFullscreen();
-          } else {
-            await document.exitFullscreen();
-          }
-        } catch (error) {
-          console.warn("Tam ekran açılamadı:", error);
+      btnFs.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
         }
       });
 
-      // Klavyeyle sayfa çevirme.
-      document.addEventListener("keydown", event => {
-        if (!pageFlip || event.altKey || event.ctrlKey || event.metaKey) return;
-
-        if (event.key === "ArrowRight") pageFlip.flipNext();
-        if (event.key === "ArrowLeft") pageFlip.flipPrev();
+      // Klavye tuşları ile yönlendirme
+      document.addEventListener("keydown", (e) => {
+        if (!pageFlip) return;
+        if (e.key === "ArrowRight") pageFlip.flipNext();
+        if (e.key === "ArrowLeft") pageFlip.flipPrev();
       });
 
-      // Tam ekrana geçildiğinde görünümü yeniden hesapla.
-      document.addEventListener("fullscreenchange", () => {
-        if (pageFlip) {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(() => {
-            window.dispatchEvent(new Event("resize"));
-          }, 100);
-        }
-      });
-
-      window.addEventListener("load", initBook, { once: true });
+      window.addEventListener("load", initPageFlip);
     })();
   </script>
 </body>
