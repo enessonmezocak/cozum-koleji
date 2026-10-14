@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Veli Kılavuzu 2026-2027 | Kağıthane Çözüm Koleji</title>
 
-  <!-- Swiper 3D & Zoom Motoru -->
+  <!-- Swiper Motoru -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -107,24 +107,10 @@
       aspect-ratio: 16 / 9;
       max-height: calc(100vh - 105px);
       position: relative;
-      box-shadow: 0 14px 38px -6px rgba(0, 0, 0, 0.14);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12);
       border-radius: 8px;
       overflow: hidden;
       background: #ffffff;
-      perspective: 2000px;
-    }
-
-    /* Sol Cilt / Defter Sırtı Dikiş Çizgisi */
-    .book-stage::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 24px;
-      background: linear-gradient(to right, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.03) 60%, transparent 100%);
-      z-index: 25;
-      pointer-events: none;
     }
 
     .swiper {
@@ -132,9 +118,10 @@
       height: 100%;
     }
 
-    /* Yumuşak ve Ağırbaşlı Yaylanma Eğrisi */
-    .swiper, .swiper-wrapper, .swiper-slide {
-      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+    /* Hafif, Donma Yapmayan Akıcı Eğri */
+    .swiper-wrapper, .swiper-slide {
+      transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important;
+      will-change: transform, opacity;
     }
 
     .swiper-slide {
@@ -145,12 +132,9 @@
       justify-content: center;
       background: #ffffff;
       overflow: hidden;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
     }
 
-    /* Geçiş Bittiğinde Diğer Sayfaları Temiz Tutma */
+    /* Aktif Olmayan Sayfaları Tamamen Gizle (Sıfır İz) */
     .swiper:not(.swiper-animating) .swiper-slide:not(.swiper-slide-active) {
       opacity: 0 !important;
       visibility: hidden !important;
@@ -206,7 +190,7 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      transition: all 0.2s ease;
+      transition: background 0.15s ease;
     }
 
     .btn:hover:not(:disabled) {
@@ -359,6 +343,8 @@
 
         const img = document.createElement("img");
         img.alt = `Veli Kılavuzu Sayfa ${index + 1}`;
+        img.decoding = "async";
+        if (index < 3) img.fetchPriority = "high";
         img.src = `images/pdfpdf-${pad}.jpg`;
         
         img.onerror = function() {
@@ -379,10 +365,10 @@
         btnNext.disabled = index >= TOTAL - 1;
       }
 
-      // 1200ms Yumuşak ve Ağırbaşlı Sayfa Çevirme
+      // Çok Hafif, Sıfır Kasma Yapan Mikro-Geçiş Motoru
       swiperInstance = new Swiper('.swiper', {
         effect: 'creative',
-        speed: 1200, // Sakin ve akıcı geçiş hızı
+        speed: 420, // Akıcı ve hafif hız
         grabCursor: true,
         zoom: {
           maxRatio: 3,
@@ -390,21 +376,15 @@
           toggle: true
         },
         creativeEffect: {
-          perspective: true,
           limitProgress: 1,
-          shadowPerProgress: false,
           prev: {
-            shadow: false,
-            origin: 'left center',
-            translate: ['-12%', 0, -20],
-            rotate: [0, -50, 0],
+            translate: ['-4%', 0, 0], // Sadece %4 hafif sola süzülür
+            scale: 0.98,              // Çok hafif derinlik
             opacity: 0
           },
           next: {
-            shadow: false,
-            origin: 'right center',
-            translate: ['12%', 0, -20],
-            rotate: [0, 50, 0],
+            translate: ['4%', 0, 0],  // Sağdan %4 hafifçe süzülerek gelir
+            scale: 0.98,
             opacity: 0
           }
         },
