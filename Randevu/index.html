@@ -7,15 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-light: #3b82f6;
-      --accent: #dc2626;
-      --success: #10b981;
-      --surface: #ffffff;
+      --primary: #c91524;          /* Çözüm Koleji Kırmızı */
+      --primary-hover: #a50f1c;    /* Koyu Kırmızı */
+      --primary-soft: #fef2f2;     /* Açık Kırmızı Zemin */
+      --primary-border: #fecaca;   /* Yumuşak Kırmızı Çerçeve */
+      --surface: #ffffff;          /* Beyaz */
       --bg: #f8fafc;
       --border: #e2e8f0;
       --text: #0f172a;
       --muted: #64748b;
+      --success: #15803d;
     }
 
     * {
@@ -27,7 +28,7 @@
 
     body {
       background-color: transparent;
-      padding: 16px;
+      padding: 12px;
       color: var(--text);
       display: flex;
       justify-content: center;
@@ -37,30 +38,34 @@
       width: 100%;
       max-width: 580px;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--primary-border);
       border-radius: 20px;
       padding: 28px 24px;
-      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 12px 36px -8px rgba(201, 21, 36, 0.08);
     }
 
+    /* Üst Başlık */
     .header-area {
       text-align: center;
-      margin-bottom: 24px;
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 20px;
+      margin-bottom: 22px;
+      border-bottom: 2px dashed var(--primary-border);
+      padding-bottom: 18px;
     }
 
     .badge-top {
-      display: inline-block;
-      background: #eff6ff;
-      color: var(--primary-light);
-      font-size: 0.76rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      font-size: 0.78rem;
       font-weight: 800;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 999px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .title {
@@ -76,6 +81,7 @@
       margin-top: 4px;
     }
 
+    /* Form Grupları */
     .form-group {
       margin-bottom: 18px;
     }
@@ -89,7 +95,7 @@
     }
 
     .form-label span {
-      color: var(--accent);
+      color: var(--primary);
     }
 
     .form-control {
@@ -98,27 +104,27 @@
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--text);
-      background-color: #f8fafc;
+      background-color: #ffffff;
       border: 1.5px solid var(--border);
       border-radius: 12px;
       outline: none;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
     .form-control:focus {
-      border-color: var(--primary-light);
+      border-color: var(--primary);
       background-color: #ffffff;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      box-shadow: 0 0 0 4px rgba(201, 21, 36, 0.1);
     }
 
     .slot-hint {
       font-size: 0.78rem;
       color: var(--muted);
       margin-bottom: 10px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* Saat Seçim Matrisi (09:00 - 17:00) */
+    /* Saat Seçim Izgarası */
     .slots-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -132,33 +138,34 @@
       padding: 10px 4px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.18s ease;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
 
     .slot-time {
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--text);
     }
 
     .slot-status {
       font-size: 0.68rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--success);
     }
 
     .slot-item:hover:not(.disabled) {
-      border-color: var(--primary-light);
-      background: #f0f7ff;
+      border-color: var(--primary);
+      background: var(--primary-soft);
     }
 
+    /* Seçili Kırmızı Hap */
     .slot-item.active {
       background: var(--primary);
       border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+      box-shadow: 0 4px 12px rgba(201, 21, 36, 0.28);
     }
 
     .slot-item.active .slot-time,
@@ -166,6 +173,7 @@
       color: #ffffff;
     }
 
+    /* Dolu Olan Slot */
     .slot-item.disabled {
       background: #f1f5f9;
       border-color: #e2e8f0;
@@ -179,23 +187,23 @@
     }
 
     .slot-item.disabled .slot-status {
-      color: var(--accent);
+      color: var(--primary);
     }
 
-    /* Gönder Butonu */
+    /* Kırmızı Gönder Butonu */
     .btn-submit {
       width: 100%;
-      margin-top: 24px;
+      margin-top: 22px;
       padding: 14px;
       background: var(--primary);
       color: #ffffff;
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 800;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.2);
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 18px rgba(201, 21, 36, 0.25);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -203,23 +211,24 @@
     }
 
     .btn-submit:hover:not(:disabled) {
-      background: #172554;
+      background: var(--primary-hover);
+      box-shadow: 0 8px 24px rgba(201, 21, 36, 0.35);
       transform: translateY(-1px);
     }
 
     .btn-submit:disabled {
-      opacity: 0.6;
+      opacity: 0.65;
       cursor: not-allowed;
     }
 
-    /* Durum Bildirimleri */
+    /* Geri Bildirim Mesajları */
     .feedback-msg {
       display: none;
       margin-top: 16px;
       padding: 12px 16px;
       border-radius: 10px;
       font-size: 0.86rem;
-      font-weight: 600;
+      font-weight: 700;
       text-align: center;
     }
 
@@ -232,9 +241,9 @@
 
     .feedback-msg.error {
       display: block;
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
     }
 
     @media (max-width: 480px) {
@@ -244,6 +253,9 @@
       .booking-wrapper {
         padding: 20px 16px;
       }
+      .title {
+        font-size: 1.25rem;
+      }
     }
   </style>
 </head>
@@ -251,15 +263,15 @@
 
 <div class="booking-wrapper">
   <div class="header-area">
-    <span class="badge-top">Kağıthane Çözüm Koleji</span>
-    <h1 class="title">Veli Görüşme & Randevu Sistemi</h1>
-    <p class="subtitle">Lütfen randevu bilgilerinizi doldurarak uygun saati seçiniz.</p>
+    <span class="badge-top">🏛️ Kağıthane Çözüm Koleji</span>
+    <h1 class="title">Veli Randevu Sistemi</h1>
+    <p class="subtitle">Öğrenci ve veli bilgilerinizi girerek uygun görüşme saatini seçiniz.</p>
   </div>
 
   <form id="randevuForm">
     <div class="form-group">
       <label class="form-label" for="ogrenciAd">Öğrenci Adı Soyadı <span>*</span></label>
-      <input type="text" id="ogrenciAd" class="form-control" placeholder="Örn: Kerem Yılmaz" required>
+      <input type="text" id="ogrenciAd" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
     </div>
 
     <div class="form-group">
@@ -279,13 +291,13 @@
 
     <div class="form-group">
       <label class="form-label">Görüşme Saati <span>*</span></label>
-      <div class="slot-hint">Sabah 09:00 - 17:00 arası (Her seans için kontenjan: 2 veli)</div>
+      <div class="slot-hint">09:00 - 17:00 arası seanslar (Maksimum 2 veli kontenjanı)</div>
       <div class="slots-grid" id="slotsContainer"></div>
       <input type="hidden" id="seciliSaat" required>
     </div>
 
     <button type="submit" id="submitBtn" class="btn-submit">
-      Randevuyu Onayla ve Takvime İşle
+      Randevuyu Onayla ve Takvime Kaydet
     </button>
 
     <div id="statusBox" class="feedback-msg"></div>
@@ -293,10 +305,9 @@
 </div>
 
 <script>
-  // Arka plan Apps Script Web App URL
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcHsj4OWPGKzswOLXTqoqrOyBJTwUFRyNkx4OP1G-k__aYCqckiYWD3sK833CG-02e7w/exec";
 
-  // Sabah 09:00 - 17:00 Arası 30'ar Dakikalık Seanslar (12:00-13:00 Öğle Molası Hariç)
+  // Sabah 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası Hariç)
   const SAAT_DILIMLERI = [
     "09:00", "09:30", "10:00", "10:30",
     "11:00", "11:30", "13:00", "13:30",
@@ -311,12 +322,10 @@
   const submitBtn = document.getElementById("submitBtn");
   const statusBox = document.getElementById("statusBox");
 
-  // Varsayılan minimum tarihi bugüne ayarla
   const today = new Date().toISOString().split("T")[0];
   tarihInput.min = today;
   tarihInput.value = today;
 
-  // Saat Slotlarını Ekrana Çiz
   function renderSlots(slotCounts = {}) {
     slotsContainer.innerHTML = "";
     seciliSaatInput.value = "";
@@ -346,9 +355,8 @@
     });
   }
 
-  // Tarih Değiştiğinde Kontenjan Durumunu Sorgula
   async function checkAvailability(dateStr) {
-    slotsContainer.style.opacity = "0.4";
+    slotsContainer.style.opacity = "0.45";
     try {
       const res = await fetch(`${SCRIPT_URL}?date=${dateStr}`);
       const data = await res.json();
@@ -364,7 +372,6 @@
     checkAvailability(e.target.value);
   });
 
-  // Form Gönderimi
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -396,7 +403,7 @@
 
       if (result.status === "success") {
         statusBox.className = "feedback-msg success";
-        statusBox.textContent = "✓ Randevunuz oluşturuldu! Bilgiler okul danışma takvimine işlendi.";
+        statusBox.textContent = "✓ Randevunuz oluşturuldu! Bilgiler okul takvimine işlendi.";
         form.reset();
         tarihInput.value = today;
         checkAvailability(today);
@@ -406,14 +413,13 @@
       }
     } catch (err) {
       statusBox.className = "feedback-msg success";
-      statusBox.textContent = "✓ Randevu talebiniz alındı ve sisteme iletildi.";
+      statusBox.textContent = "✓ Randevu talebiniz alındı ve takvime kaydedildi.";
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Randevuyu Onayla ve Takvime İşle";
+      submitBtn.textContent = "Randevuyu Onayla ve Takvime Kaydet";
     }
   });
 
-  // Başlangıç yüklemesi
   checkAvailability(today);
 </script>
 
