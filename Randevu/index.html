@@ -22,6 +22,7 @@
     --card:#ffffff;
     --ok:#16a34a;
     --ok-soft:#dcfce7;
+    --warn:#d97706;
     --radius:18px;
     --shadow:0 12px 35px -10px rgba(201,21,36,.08);
   }
@@ -131,13 +132,19 @@
   .slot{
     border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:7px 2px;
     display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;
+    transition:all 0.15s;
   }
   .slot strong{font-size:12.5px;font-weight:800}
-  .slot span{font-size:8.5px;font-weight:700;color:var(--ok)}
+  .slot span{font-size:8.5px;font-weight:700}
+  .slot span.avail-full { color: var(--ok); }
+  .slot span.avail-half { color: var(--warn); }
   .slot:hover:not(:disabled){border-color:var(--brand);background:var(--brand-soft)}
   .slot.selected{background:var(--brand);border-color:var(--brand)}
-  .slot.selected strong,.slot.selected span{color:#fff}
-  .slot:disabled{border-color:var(--line);background:#f8fafc;cursor:not-allowed;opacity:.5}
+  .slot.selected strong,.slot.selected span{color:#fff!important}
+  
+  .slot:disabled{
+    border-color:var(--line);background:#f8fafc;cursor:not-allowed;opacity:.55;
+  }
   .slot:disabled strong{color:#94a3b8;text-decoration:line-through}
   .slot:disabled span{color:var(--brand)}
 
@@ -299,7 +306,6 @@
         </div>
         <div class="field">
           <label for="grade">Öğrenci Sınıfı / Kademesi <em>*</em></label>
-          <!-- 8. sınıf sonrası kaldırıldı, son kademe 8. sınıf yapıldı -->
           <select id="grade" required>
             <option value="">Seçiniz</option>
             <option>Anaokulu</option>
@@ -331,7 +337,7 @@
     </form>
   </section>
 
-  <!-- ADIM 3: Numarasız Sade Bilet & Özet Kartı -->
+  <!-- ADIM 3: Sade Onay ve Genel Özet -->
   <section id="step3" class="card success hidden">
     <div class="check-badge">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
@@ -383,7 +389,7 @@
   const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
   const DAYS_LONG = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
   
-  // 09:00 - 17:00 Seansları
+  // 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası)
   const SLOT_MINUTES = [
     540, 570, 600, 630, 660, 690, // 09:00, 09:30, 10:00, 10:30, 11:00, 11:30
     780, 810, 840, 870, 900, 930, 960, 990, 1020 // 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00
@@ -422,7 +428,7 @@
     sumPhone:$("sumPhone"), sumDate:$("sumDate"), sumTime:$("sumTime"), newBooking:$("newBooking")
   };
 
-  /* ---------- OTOMATİK 0 VE SINIRLI TELEFON ---------- */
+  /* ---------- OTOMATİK 0 VE 0543 777 55 55 SINIRI ---------- */
   el.phone.addEventListener("focus", () => {
     if (!el.phone.value) el.phone.value = "0";
   });
@@ -442,7 +448,7 @@
     e.target.value = formatted;
   });
 
-  /* ---------- TAKVİM (CUMARTESİ DAHİL) ---------- */
+  /* ---------- TAKVİM ---------- */
   function renderCalendar(){
     const m = state.viewMonth;
     el.monthLabel.textContent = MONTHS[m.getMonth()] + " " + m.getFullYear();
@@ -497,7 +503,7 @@
     el.slotsWrap.style.opacity = "0.4";
     el.slotCount.textContent = "Kontrol ediliyor...";
     try {
-      const res = await fetch(`${SCRIPT_URL}?date=${dateStr}`);
+      const res = await fetch(`${SCRIPT_URL}?date=${dateStr}&t=${Date.now()}`);
       const data = await res.json();
       state.slotCounts = data.slotCounts || {};
     } catch(e) {
@@ -524,10 +530,23 @@
         const isFull = remain <= 0;
         const isSelected = state.selectedTime === m;
 
+        let statusText = "";
+        let statusClass = "";
+
+        if (isFull) {
+          statusText = "Dolu";
+        } else if (remain === 1) {
+          statusText = "1 Müsait";
+          statusClass = "avail-half";
+        } else {
+          statusText = "2 Müsait";
+          statusClass = "avail-full";
+        }
+
         gHtml += `<button type="button" class="slot ${isSelected ? 'selected' : ''}" 
                     data-time="${m}" ${isFull ? 'disabled' : ''}>
                     <strong>${timeStr}</strong>
-                    <span>${isFull ? 'Dolu' : remain + ' Müsait'}</span>
+                    <span class="${statusClass}">${statusText}</span>
                   </button>`;
       });
       gHtml += `</div></div>`;
@@ -544,8 +563,7 @@
       });
     });
 
-    el.slotCount.textContent = "09:00 - 17:00 arası seanslar";
-    sendHeight();
+    el.slotCount.textContent = "09:00 - 17:00 arası seanslar (Maksimum 2 Veli)";
   }
 
   function updateSelectionBar(){
@@ -572,92 +590,10 @@
       s.classList.toggle("active", i === n);
       s.classList.toggle("done", i < n || n === 3);
     });
-    sendHeight();
   }
 
   el.prevMonth.addEventListener("click", () => {
     state.viewMonth = new Date(state.viewMonth.getFullYear(), state.viewMonth.getMonth()-1, 1);
     renderCalendar();
   });
-  el.nextMonth.addEventListener("click", () => {
-    state.viewMonth = new Date(state.viewMonth.getFullYear(), state.viewMonth.getMonth()+1, 1);
-    renderCalendar();
-  });
-
-  el.toForm.addEventListener("click", () => {
-    if (!state.selectedDate || state.selectedTime === null) return;
-    el.recapDate.textContent = fmtLong(state.selectedDate);
-    el.recapDetail.textContent = `${hhmm(state.selectedTime)} – ${hhmm(state.selectedTime + 30)} · Bireysel Veli Görüşmesi`;
-    setStep(2);
-  });
-  el.backTo1.addEventListener("click", () => setStep(1));
-
-  /* ---------- FORM GÖNDERİMİ ---------- */
-  el.form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if ($("website").value) return;
-
-    const rawPhone = el.phone.value.replace(/\D/g, "");
-    if (rawPhone.length !== 11) {
-      alert("Lütfen telefon numaranızı eksiksiz giriniz.");
-      el.phone.focus();
-      return;
-    }
-
-    el.submitBtn.disabled = true;
-    el.submitLabel.textContent = "Kaydediliyor...";
-
-    const payload = {
-      ogrenciAd: el.studentName.value.trim(),
-      kademe: el.grade.value,
-      veliAd: el.parentName.value.trim(),
-      telefon: el.phone.value.trim(),
-      tarih: ymd(state.selectedDate),
-      saat: hhmm(state.selectedTime)
-    };
-
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (data.status === "error") {
-        alert(data.message);
-        el.submitBtn.disabled = false;
-        el.submitLabel.textContent = "Randevuyu Onayla";
-        return;
-      }
-    } catch(err) {}
-
-    // Onay Özeti Bilgilerini Doldurma
-    el.sumStudent.textContent = payload.ogrenciAd;
-    el.sumGrade.textContent = payload.kademe;
-    el.sumParent.textContent = payload.veliAd;
-    el.sumPhone.textContent = payload.telefon;
-    el.sumDate.textContent = fmtLong(state.selectedDate);
-    el.sumTime.textContent = hhmm(state.selectedTime) + " – " + hhmm(state.selectedTime + 30);
-
-    setStep(3);
-  });
-
-  el.newBooking.addEventListener("click", () => {
-    el.form.reset();
-    state.selectedTime = null;
-    selectDate(new Date(TODAY));
-    setStep(1);
-  });
-
-  function sendHeight(){
-    const h = document.documentElement.scrollHeight || document.body.scrollHeight;
-    try { parent.postMessage({ type: "cozum-randevu-height", height: h }, "*"); } catch(e){}
-  }
-  window.addEventListener("resize", sendHeight);
-
-  renderCalendar();
-  selectDate(TODAY);
-})();
-</script>
-</body>
-</html>
+  el.nextMonth
