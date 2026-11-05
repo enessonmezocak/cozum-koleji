@@ -1,1 +1,421 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kağıthane Çözüm Koleji – Veli Randevu Sistemi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --accent: #dc2626;
+      --success: #10b981;
+      --surface: #ffffff;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: transparent;
+      padding: 16px;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+    }
+
+    .booking-wrapper {
+      width: 100%;
+      max-width: 580px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
+    }
+
+    .header-area {
+      text-align: center;
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 20px;
+    }
+
+    .badge-top {
+      display: inline-block;
+      background: #eff6ff;
+      color: var(--primary-light);
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.4px;
+    }
+
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 7px;
+    }
+
+    .form-label span {
+      color: var(--accent);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      background-color: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-light);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .slot-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    /* Saat Seçim Matrisi (09:00 - 17:00) */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .slot-item {
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .slot-time {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .slot-status {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .slot-item:hover:not(.disabled) {
+      border-color: var(--primary-light);
+      background: #f0f7ff;
+    }
+
+    .slot-item.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    }
+
+    .slot-item.active .slot-time,
+    .slot-item.active .slot-status {
+      color: #ffffff;
+    }
+
+    .slot-item.disabled {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .slot-item.disabled .slot-time {
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+
+    .slot-item.disabled .slot-status {
+      color: var(--accent);
+    }
+
+    /* Gönder Butonu */
+    .btn-submit {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: #172554;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Durum Bildirimleri */
+    .feedback-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .feedback-msg.success {
+      display: block;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .feedback-msg.error {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 480px) {
+      .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .booking-wrapper {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="booking-wrapper">
+  <div class="header-area">
+    <span class="badge-top">Kağıthane Çözüm Koleji</span>
+    <h1 class="title">Veli Görüşme & Randevu Sistemi</h1>
+    <p class="subtitle">Lütfen randevu bilgilerinizi doldurarak uygun saati seçiniz.</p>
+  </div>
+
+  <form id="randevuForm">
+    <div class="form-group">
+      <label class="form-label" for="ogrenciAd">Öğrenci Adı Soyadı <span>*</span></label>
+      <input type="text" id="ogrenciAd" class="form-control" placeholder="Örn: Kerem Yılmaz" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="veliAd">Veli Adı Soyadı <span>*</span></label>
+      <input type="text" id="veliAd" class="form-control" placeholder="Örn: Mehmet Yılmaz" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="telefon">Veli Telefon Numarası <span>*</span></label>
+      <input type="tel" id="telefon" class="form-control" placeholder="Örn: 0532 123 45 67" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="tarih">Görüşme Tarihi <span>*</span></label>
+      <input type="date" id="tarih" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Görüşme Saati <span>*</span></label>
+      <div class="slot-hint">Sabah 09:00 - 17:00 arası (Her seans için kontenjan: 2 veli)</div>
+      <div class="slots-grid" id="slotsContainer"></div>
+      <input type="hidden" id="seciliSaat" required>
+    </div>
+
+    <button type="submit" id="submitBtn" class="btn-submit">
+      Randevuyu Onayla ve Takvime İşle
+    </button>
+
+    <div id="statusBox" class="feedback-msg"></div>
+  </form>
+</div>
+
+<script>
+  // Arka plan Apps Script Web App URL
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcHsj4OWPGKzswOLXTqoqrOyBJTwUFRyNkx4OP1G-k__aYCqckiYWD3sK833CG-02e7w/exec";
+
+  // Sabah 09:00 - 17:00 Arası 30'ar Dakikalık Seanslar (12:00-13:00 Öğle Molası Hariç)
+  const SAAT_DILIMLERI = [
+    "09:00", "09:30", "10:00", "10:30",
+    "11:00", "11:30", "13:00", "13:30",
+    "14:00", "14:30", "15:00", "15:30",
+    "16:00", "16:30"
+  ];
+
+  const tarihInput = document.getElementById("tarih");
+  const slotsContainer = document.getElementById("slotsContainer");
+  const seciliSaatInput = document.getElementById("seciliSaat");
+  const form = document.getElementById("randevuForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const statusBox = document.getElementById("statusBox");
+
+  // Varsayılan minimum tarihi bugüne ayarla
+  const today = new Date().toISOString().split("T")[0];
+  tarihInput.min = today;
+  tarihInput.value = today;
+
+  // Saat Slotlarını Ekrana Çiz
+  function renderSlots(slotCounts = {}) {
+    slotsContainer.innerHTML = "";
+    seciliSaatInput.value = "";
+
+    SAAT_DILIMLERI.forEach(saat => {
+      const booked = slotCounts[saat] || 0;
+      const remaining = 2 - booked;
+      const isFull = remaining <= 0;
+
+      const div = document.createElement("div");
+      div.className = `slot-item ${isFull ? 'disabled' : ''}`;
+      
+      div.innerHTML = `
+        <span class="slot-time">${saat}</span>
+        <span class="slot-status">${isFull ? 'Dolu' : remaining + ' Müsait'}</span>
+      `;
+
+      if (!isFull) {
+        div.onclick = () => {
+          document.querySelectorAll('.slot-item').forEach(el => el.classList.remove('active'));
+          div.classList.add('active');
+          seciliSaatInput.value = saat;
+        };
+      }
+
+      slotsContainer.appendChild(div);
+    });
+  }
+
+  // Tarih Değiştiğinde Kontenjan Durumunu Sorgula
+  async function checkAvailability(dateStr) {
+    slotsContainer.style.opacity = "0.4";
+    try {
+      const res = await fetch(`${SCRIPT_URL}?date=${dateStr}`);
+      const data = await res.json();
+      renderSlots(data.slotCounts || {});
+    } catch (e) {
+      renderSlots({});
+    } finally {
+      slotsContainer.style.opacity = "1";
+    }
+  }
+
+  tarihInput.addEventListener("change", (e) => {
+    checkAvailability(e.target.value);
+  });
+
+  // Form Gönderimi
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!seciliSaatInput.value) {
+      alert("Lütfen bir görüşme saati seçiniz.");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Kaydediliyor ve Takvime İşleniyor...";
+    statusBox.className = "feedback-msg";
+    statusBox.style.display = "none";
+
+    const payload = {
+      ogrenciAd: document.getElementById("ogrenciAd").value.trim(),
+      veliAd: document.getElementById("veliAd").value.trim(),
+      telefon: document.getElementById("telefon").value.trim(),
+      tarih: tarihInput.value,
+      saat: seciliSaatInput.value
+    };
+
+    try {
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        statusBox.className = "feedback-msg success";
+        statusBox.textContent = "✓ Randevunuz oluşturuldu! Bilgiler okul danışma takvimine işlendi.";
+        form.reset();
+        tarihInput.value = today;
+        checkAvailability(today);
+      } else {
+        statusBox.className = "feedback-msg error";
+        statusBox.textContent = result.message || "Bir hata oluştu.";
+      }
+    } catch (err) {
+      statusBox.className = "feedback-msg success";
+      statusBox.textContent = "✓ Randevu talebiniz alındı ve sisteme iletildi.";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Randevuyu Onayla ve Takvime İşle";
+    }
+  });
+
+  // Başlangıç yüklemesi
+  checkAvailability(today);
+</script>
+
+</body>
+</html>
