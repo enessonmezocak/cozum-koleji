@@ -52,7 +52,6 @@
     border:1px solid var(--brand-line);border-radius:999px;padding:5px 14px;
   }
 
-  /* Başlık Alanı */
   .hero{padding:10px 0 20px;text-align:center;max-width:680px;margin:0 auto}
   .hero h1{
     margin:0 0 6px;
@@ -63,7 +62,6 @@
   .hero h1 span{color:var(--brand)}
   .hero p{margin:0;color:var(--ink-soft);font-size:14px;font-weight:600}
 
-  /* 3 Aşamalı İlerleme */
   .stepper{
     display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
     max-width:480px;margin:0 auto 16px;
@@ -78,7 +76,6 @@
   .step.active .step-label{color:var(--brand)}
   .step.done .step-num{background:var(--ink);border-color:var(--ink);color:#fff}
 
-  /* Kart */
   .card{
     background:var(--card);border:1.5px solid var(--brand-line);border-radius:var(--radius);
     box-shadow:var(--shadow);overflow:hidden;
@@ -144,7 +141,6 @@
   .slot:disabled strong{color:#94a3b8;text-decoration:line-through}
   .slot:disabled span{color:var(--brand)}
 
-  /* Alt Çubuk */
   .selection{
     display:flex;align-items:center;justify-content:space-between;gap:14px;
     border-top:1px solid var(--line);background:#fafafa;padding:12px 20px;
@@ -162,7 +158,6 @@
   .btn.primary:disabled{background:#e2e8f0;color:#94a3b8;cursor:not-allowed}
   .btn.wide{width:100%;padding:13px}
 
-  /* Form */
   .form-card{padding:22px 24px}
   .recap{
     display:flex;align-items:center;justify-content:space-between;
@@ -181,7 +176,6 @@
   }
   .field input:focus,.field select:focus{border-color:var(--brand)}
 
-  /* Onay Ekranı (Numarasız, Sade Bilet) */
   .success{padding:30px 20px;text-align:center;max-width:520px;margin:0 auto}
   .check-badge{
     width:52px;height:52px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;margin:0 auto 12px;
@@ -305,12 +299,18 @@
         </div>
         <div class="field">
           <label for="grade">Öğrenci Sınıfı / Kademesi <em>*</em></label>
+          <!-- 8. sınıf sonrası kaldırıldı, son kademe 8. sınıf yapıldı -->
           <select id="grade" required>
             <option value="">Seçiniz</option>
             <option>Anaokulu</option>
-            <option>1. Sınıf</option><option>2. Sınıf</option><option>3. Sınıf</option><option>4. Sınıf</option>
-            <option>5. Sınıf</option><option>6. Sınıf</option><option>7. Sınıf</option><option>8. Sınıf</option>
-            <option>9. Sınıf</option><option>10. Sınıf</option><option>11. Sınıf</option><option>12. Sınıf</option>
+            <option>1. Sınıf</option>
+            <option>2. Sınıf</option>
+            <option>3. Sınıf</option>
+            <option>4. Sınıf</option>
+            <option>5. Sınıf</option>
+            <option>6. Sınıf</option>
+            <option>7. Sınıf</option>
+            <option>8. Sınıf</option>
           </select>
         </div>
         <div class="field">
@@ -331,7 +331,7 @@
     </form>
   </section>
 
-  <!-- ADIM 3: Sade Onay ve Genel Özet Ekranı -->
+  <!-- ADIM 3: Numarasız Sade Bilet & Özet Kartı -->
   <section id="step3" class="card success hidden">
     <div class="check-badge">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
@@ -383,7 +383,7 @@
   const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
   const DAYS_LONG = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
   
-  // 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası)
+  // 09:00 - 17:00 Seansları
   const SLOT_MINUTES = [
     540, 570, 600, 630, 660, 690, // 09:00, 09:30, 10:00, 10:30, 11:00, 11:30
     780, 810, 840, 870, 900, 930, 960, 990, 1020 // 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00
@@ -422,7 +422,7 @@
     sumPhone:$("sumPhone"), sumDate:$("sumDate"), sumTime:$("sumTime"), newBooking:$("newBooking")
   };
 
-  /* ---------- OTOMATİK 0 VE 0543 777 55 55 SINIRI ---------- */
+  /* ---------- OTOMATİK 0 VE SINIRLI TELEFON ---------- */
   el.phone.addEventListener("focus", () => {
     if (!el.phone.value) el.phone.value = "0";
   });
@@ -442,7 +442,7 @@
     e.target.value = formatted;
   });
 
-  /* ---------- TAKVİM (CUMARTESİ DAHİL, PAZAR KAPALI) ---------- */
+  /* ---------- TAKVİM (CUMARTESİ DAHİL) ---------- */
   function renderCalendar(){
     const m = state.viewMonth;
     el.monthLabel.textContent = MONTHS[m.getMonth()] + " " + m.getFullYear();
@@ -462,7 +462,7 @@
     for (let day=1; day<=daysInMonth; day++){
       const d = new Date(m.getFullYear(), m.getMonth(), day);
       const isPast = d < TODAY || d > LAST_DAY;
-      const isSunday = d.getDay() === 0; // Sadece Pazar kapalı, Cumartesi açık!
+      const isSunday = d.getDay() === 0;
       const closed = isPast || isSunday;
 
       const classes = ["day"];
@@ -544,7 +544,7 @@
       });
     });
 
-    el.slotCount.textContent = "09:00 - 17:00 arası 30'ar dakikalık seanslar";
+    el.slotCount.textContent = "09:00 - 17:00 arası seanslar";
     sendHeight();
   }
 
@@ -557,7 +557,7 @@
       el.toForm.disabled = false;
     } else {
       el.selectionText.classList.add("is-empty");
-      el.selectionText.innerHTML = `<strong>Saat Seçilmedi</strong><span>Lütfen bir görüşme saati seçin.</span>`;
+      el.selectionText.innerHTML = `<strong>Saat Seçilmedi</strong><span>Lütfen bir saat seçin.</span>`;
       el.toForm.disabled = true;
     }
   }
@@ -631,7 +631,7 @@
       }
     } catch(err) {}
 
-    // Onay Özeti Doldurma (Numarasız)
+    // Onay Özeti Bilgilerini Doldurma
     el.sumStudent.textContent = payload.ogrenciAd;
     el.sumGrade.textContent = payload.kademe;
     el.sumParent.textContent = payload.veliAd;
