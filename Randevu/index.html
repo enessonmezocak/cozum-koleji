@@ -385,11 +385,12 @@
 (function(){
   "use strict";
 
+  // Güncellenen Apps Script Web App URL
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCMHebt8YOGs9SJWRTSlpyf9xVtJim8oq-tUTH_GfmIFv9sq1TWy6n9WMWUg5wXQ6vfw/exec";
   const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
   const DAYS_LONG = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
   
-  // 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası)
+  // 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası Hariç)
   const SLOT_MINUTES = [
     540, 570, 600, 630, 660, 690, // 09:00, 09:30, 10:00, 10:30, 11:00, 11:30
     780, 810, 840, 870, 900, 930, 960, 990, 1020 // 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00
@@ -428,7 +429,7 @@
     sumPhone:$("sumPhone"), sumDate:$("sumDate"), sumTime:$("sumTime"), newBooking:$("newBooking")
   };
 
-  /* ---------- OTOMATİK 0 VE 0543 777 55 55 SINIRI ---------- */
+  /* ---------- OTOMATİK 0 VE SINIRLI TELEFON ---------- */
   el.phone.addEventListener("focus", () => {
     if (!el.phone.value) el.phone.value = "0";
   });
@@ -499,9 +500,10 @@
     await fetchSlots(ymd(date));
   }
 
+  /* ---------- TABLODAN ANLIK KONTENJAN ÇEKME ---------- */
   async function fetchSlots(dateStr){
-    el.slotsWrap.style.opacity = "0.4";
-    el.slotCount.textContent = "Kontrol ediliyor...";
+    el.slotsWrap.style.opacity = "0.35";
+    el.slotCount.textContent = "Müsaitlik kontrol ediliyor...";
     try {
       const res = await fetch(`${SCRIPT_URL}?date=${dateStr}&t=${Date.now()}`);
       const data = await res.json();
@@ -648,7 +650,7 @@
       }
     } catch(err) {}
 
-    // Onay Özeti Doldurma (Numarasız)
+    // Onay Özeti Doldurma
     el.sumStudent.textContent = payload.ogrenciAd;
     el.sumGrade.textContent = payload.kademe;
     el.sumParent.textContent = payload.veliAd;
