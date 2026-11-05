@@ -39,7 +39,7 @@
     justify-content:center;
   }
   .wrap{width:min(980px,100%);margin:0 auto}
-  
+
   .topbar{
     display:flex;align-items:center;justify-content:space-between;gap:16px;
     padding:12px 0 16px;
@@ -81,7 +81,7 @@
     background:var(--card);border:1.5px solid var(--brand-line);border-radius:var(--radius);
     box-shadow:var(--shadow);overflow:hidden;
   }
-  
+
   .booking-head{
     padding:14px 20px;border-bottom:1px solid var(--line);background:#fafafa;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
@@ -103,6 +103,7 @@
     color:var(--ink-soft);
   }
   .icon-btn:hover:not(:disabled){border-color:var(--brand);color:var(--brand)}
+  .icon-btn:disabled{opacity:.4;cursor:not-allowed}
   .month-label{font-size:11.5px;font-weight:800;min-width:85px;text-align:center}
 
   .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
@@ -119,6 +120,7 @@
   .day.other{color:#f1f5f9;cursor:default;pointer-events:none}
   .day.today{box-shadow:inset 0 0 0 1.5px var(--brand-line)}
   .day.selected{background:var(--brand)!important;border-color:var(--brand)!important;color:#fff!important}
+  .day:focus-visible{outline:3px solid rgba(201,21,36,.18);outline-offset:1px}
 
   .slot-date{margin:0;font-size:14.5px;font-weight:800;color:var(--brand)}
   .slot-count{margin:2px 0 0;font-size:11px;color:var(--muted)}
@@ -136,17 +138,18 @@
   }
   .slot strong{font-size:12.5px;font-weight:800}
   .slot span{font-size:8.5px;font-weight:700}
-  .slot span.avail-full { color: var(--ok); }
-  .slot span.avail-half { color: var(--warn); }
+  .slot span.avail-full{color:var(--ok)}
+  .slot span.avail-half{color:var(--warn)}
   .slot:hover:not(:disabled){border-color:var(--brand);background:var(--brand-soft)}
   .slot.selected{background:var(--brand);border-color:var(--brand)}
   .slot.selected strong,.slot.selected span{color:#fff!important}
-  
-  .slot:disabled{
-    border-color:var(--line);background:#f8fafc;cursor:not-allowed;opacity:.55;
-  }
+  .slot:disabled{border-color:var(--line);background:#f8fafc;cursor:not-allowed;opacity:.55}
   .slot:disabled strong{color:#94a3b8;text-decoration:line-through}
   .slot:disabled span{color:var(--brand)}
+  .slot.past:disabled{opacity:.42}
+  .slot.past:disabled strong{text-decoration:none}
+  .slot.past:disabled span{color:var(--muted)}
+  .slot:focus-visible{outline:3px solid rgba(201,21,36,.18);outline-offset:1px}
 
   .selection{
     display:flex;align-items:center;justify-content:space-between;gap:14px;
@@ -167,12 +170,12 @@
 
   .form-card{padding:22px 24px}
   .recap{
-    display:flex;align-items:center;justify-content:space-between;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
     background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:10px;padding:10px 14px;margin-bottom:16px;
   }
   .recap strong{display:block;font-size:12px;color:var(--brand)}
   .recap span{display:block;font-size:11px;color:var(--ink-soft)}
-  .link-btn{background:none;border:0;color:var(--brand);font-weight:800;font-size:11.5px;cursor:pointer}
+  .link-btn{background:none;border:0;color:var(--brand);font-weight:800;font-size:11.5px;cursor:pointer;white-space:nowrap}
   .link-btn:hover{text-decoration:underline}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .field{display:flex;flex-direction:column;gap:4px}
@@ -180,8 +183,45 @@
   .field label em{color:var(--brand);font-style:normal}
   .field input,.field select{
     width:100%;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;
+    min-height:40px;
   }
-  .field input:focus,.field select:focus{border-color:var(--brand)}
+  .field input:focus,.field select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(201,21,36,.07)}
+  .field.invalid input,.field.invalid select{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.07)}
+  .field .err{display:none;font-size:10px;font-weight:700;color:#b91c1c;line-height:1.35}
+  .field.invalid .err{display:block}
+
+  .check{display:flex;align-items:flex-start;gap:9px;margin:14px 0 0;font-size:10.5px;color:var(--ink-soft);line-height:1.5}
+  .check input{width:16px;height:16px;margin:1px 0 0;accent-color:var(--brand);flex:none;cursor:pointer}
+  .check label{cursor:pointer}
+  .check a{color:var(--brand);font-weight:800;text-decoration:none}
+  .check a:hover{text-decoration:underline}
+  .check.invalid{color:#b91c1c}
+  .check.invalid input{outline:2px solid rgba(220,38,38,.4);outline-offset:1px}
+
+  .form-error{
+    margin-top:12px;padding:10px 12px;border:1px solid #fecaca;background:#fef2f2;color:#991b1b;
+    border-radius:8px;font-size:11.5px;font-weight:600;line-height:1.5;
+  }
+  .notice{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding:9px 11px;border-radius:8px;font-size:11px;font-weight:600;line-height:1.5;margin-bottom:10px;
+  }
+  .notice.error{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+  .notice.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .notice button{
+    border:0;background:#fff;border-radius:6px;padding:4px 9px;font-size:10.5px;font-weight:800;
+    color:inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(0,0,0,.06);white-space:nowrap;
+  }
+  .slots-state{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    min-height:210px;text-align:center;color:var(--muted);font-size:11.5px;line-height:1.5;
+  }
+  .slots-state strong{color:var(--ink-soft);font-size:12.5px}
+  .spinner{
+    width:20px;height:20px;border-radius:50%;border:2.5px solid var(--brand-line);
+    border-top-color:var(--brand);animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   .success{padding:30px 20px;text-align:center;max-width:520px;margin:0 auto}
   .check-badge{
@@ -190,17 +230,19 @@
   }
   .success h2{margin:0 0 4px;font-size:20px;font-weight:800;color:var(--ink)}
   .success > p{margin:0 auto 18px;color:var(--muted);font-size:12.5px}
-  
+
   .summary-card{
     text-align:left;border:1.5px solid var(--brand-line);border-radius:12px;background:#fff;padding:16px;margin-bottom:18px;
     box-shadow:0 4px 14px rgba(201,21,36,.04);
   }
   .summary-item{
-    display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px;
+    display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px;
   }
   .summary-item:last-child{border-bottom:none}
-  .summary-label{color:var(--muted);font-weight:700}
-  .summary-val{color:var(--ink);font-weight:800}
+  .summary-label{color:var(--muted);font-weight:700;flex:none}
+  .summary-val{color:var(--ink);font-weight:800;text-align:right}
+  .summary-val.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:var(--brand);letter-spacing:.04em}
+  .summary-note{margin:0 0 16px;font-size:10.5px;color:var(--muted);line-height:1.5}
 
   .hidden{display:none!important}
 
@@ -209,6 +251,19 @@
     .cal-pane{border-right:0;border-bottom:1px solid var(--line)}
     .grid2{grid-template-columns:1fr}
     .slot-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:480px){
+    body{padding:10px}
+    .topbar{padding:8px 0 12px}
+    .campus-pill{font-size:10px;padding:4px 10px}
+    .cal-pane,.slot-pane,.form-card{padding:14px}
+    .selection{padding:10px 14px}
+    .selection .btn{flex:none}
+    .success{padding:24px 14px}
+    .summary-item{font-size:11.5px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
   }
 </style>
 </head>
@@ -228,7 +283,7 @@
     <p>Uygun gün ve saati seçerek randevunuzu tamamlayın.</p>
   </section>
 
-  <nav class="stepper">
+  <nav class="stepper" aria-label="Randevu adımları">
     <div class="step active" data-step="1">
       <span class="step-num">1</span>
       <span class="step-label">Tarih &amp; Saat</span>
@@ -255,15 +310,15 @@
         <div class="pane-head">
           <h3>Tarih Seçin</h3>
           <div class="month-nav">
-            <button class="icon-btn" id="prevMonth" type="button">‹</button>
+            <button class="icon-btn" id="prevMonth" type="button" aria-label="Önceki ay">‹</button>
             <span class="month-label" id="monthLabel">—</span>
-            <button class="icon-btn" id="nextMonth" type="button">›</button>
+            <button class="icon-btn" id="nextMonth" type="button" aria-label="Sonraki ay">›</button>
           </div>
         </div>
-        <div class="weekdays">
+        <div class="weekdays" aria-hidden="true">
           <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
         </div>
-        <div class="calendar-grid" id="calendar"></div>
+        <div class="calendar-grid" id="calendar" role="grid" aria-label="Randevu takvimi"></div>
       </div>
 
       <div class="slot-pane">
@@ -273,6 +328,7 @@
             <p class="slot-count" id="slotCount">Takvimden gün seçiniz</p>
           </div>
         </div>
+        <div id="apiNotice" class="notice error hidden" role="alert"></div>
         <div id="slotsWrap"></div>
       </div>
     </div>
@@ -302,11 +358,12 @@
       <div class="grid2">
         <div class="field">
           <label for="studentName">Öğrenci Adı Soyadı <em>*</em></label>
-          <input id="studentName" type="text" placeholder="Örn: Kerem Yılmaz" required>
+          <input id="studentName" name="studentName" type="text" placeholder="Örn: Kerem Yılmaz" autocomplete="name" maxlength="80" required>
+          <span class="err" id="err-studentName">Lütfen öğrencinin adını ve soyadını girin.</span>
         </div>
         <div class="field">
           <label for="grade">Öğrenci Sınıfı / Kademesi <em>*</em></label>
-          <select id="grade" required>
+          <select id="grade" name="grade" required>
             <option value="">Seçiniz</option>
             <option>Anaokulu</option>
             <option>1. Sınıf</option>
@@ -318,18 +375,28 @@
             <option>7. Sınıf</option>
             <option>8. Sınıf</option>
           </select>
+          <span class="err" id="err-grade">Lütfen sınıf / kademe seçin.</span>
         </div>
         <div class="field">
           <label for="parentName">Veli Adı Soyadı <em>*</em></label>
-          <input id="parentName" type="text" placeholder="Örn: Mehmet Yılmaz" required>
+          <input id="parentName" name="parentName" type="text" placeholder="Örn: Mehmet Yılmaz" autocomplete="name" maxlength="80" required>
+          <span class="err" id="err-parentName">Lütfen velinin adını ve soyadını girin.</span>
         </div>
         <div class="field">
           <label for="phone">Veli Telefon Numarası <em>*</em></label>
-          <input id="phone" type="tel" inputmode="tel" placeholder="0543 777 55 55" maxlength="14" required>
+          <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="0543 777 55 55" autocomplete="tel" maxlength="14" required>
+          <span class="err" id="err-phone">Geçerli bir telefon numarası girin.</span>
         </div>
       </div>
 
-      <input type="text" id="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;" aria-hidden="true">
+
+      <div class="check" id="kvkkWrap">
+        <input id="kvkk" name="kvkk" type="checkbox">
+        <label for="kvkk">Kişisel verilerimin randevu oluşturma ve bilgilendirme amacıyla işlenmesine ilişkin <a href="https://www.cozumkoleji.com.tr/tr/sayfa/135/kvkk-aydinlatma-metni" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum, onaylıyorum. <em style="color:var(--brand);font-style:normal;">*</em></label>
+      </div>
+
+      <div id="formError" class="form-error hidden" role="alert"></div>
 
       <button class="btn primary wide" id="submitBtn" type="submit" style="margin-top:16px;">
         <span id="submitLabel">Randevuyu Onayla</span>
@@ -337,10 +404,10 @@
     </form>
   </section>
 
-  <!-- ADIM 3: Sade Onay ve Genel Özet -->
+  <!-- ADIM 3 -->
   <section id="step3" class="card success hidden">
     <div class="check-badge">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
     </div>
     <h2>Randevunuz Onaylandı</h2>
     <p>Görüşme talebiniz başarıyla kaydedilmiştir.</p>
@@ -374,8 +441,13 @@
         <span class="summary-label">Saat Dilimi</span>
         <span class="summary-val" id="sumTime" style="color:var(--brand)">—</span>
       </div>
+      <div class="summary-item">
+        <span class="summary-label">Randevu Kodu</span>
+        <span class="summary-val code" id="sumCode">—</span>
+      </div>
     </div>
 
+    <p class="summary-note">Randevunuz danışma ekibinin takvimine eklendi. İptal veya değişiklik için randevu kodunuzla okulu arayabilirsiniz.</p>
     <button class="btn primary" id="newBooking" type="button">Yeni Randevu Oluştur</button>
   </section>
 
@@ -385,32 +457,59 @@
 (function(){
   "use strict";
 
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcHsj4OWPGKzswOLXTqoqrOyBJTwUFRyNkx4OP1G-k__aYCqckiYWD3sK833CG-02e7w/exec";
+  /* ÖNEMLİ: Apps Script'i her güncellediğinizde yeni sürüm olarak deploy edin.
+     /exec URL'si aynı kalır. URL değişirse burayı da güncelleyin. */
+  const API_OVERRIDE = new URLSearchParams(location.search).get("api");
+  const SCRIPT_URL = API_OVERRIDE || "https://script.google.com/macros/s/AKfycbzcHsj4OWPGKzswOLXTqoqrOyBJTwUFRyNkx4OP1G-k__aYCqckiYWD3sK833CG-02e7w/exec";
+
   const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
   const DAYS_LONG = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
-  
-  // 09:00 - 17:00 Seansları (12:00-13:00 Öğle Arası)
-  const SLOT_MINUTES = [
-    540, 570, 600, 630, 660, 690, // 09:00, 09:30, 10:00, 10:30, 11:00, 11:30
-    780, 810, 840, 870, 900, 930, 960, 990, 1020 // 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00
-  ];
 
-  const pad = n => String(n).padStart(2,"0");
-  const hhmm = mins => pad(Math.floor(mins/60))+":"+pad(mins%60);
-  const ymd = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
-  const fmtLong = d => d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear()+", "+DAYS_LONG[d.getDay()];
+  // 09:00 - 17:00; son randevu 16:30'da başlar (17:00'de biter). 12:00-13:00 öğle arası.
+  const SLOT_MINUTES = [
+    540, 570, 600, 630, 660, 690,
+    780, 810, 840, 870, 900, 930, 960, 990
+  ];
+  const SLOT_TIMES = SLOT_MINUTES.map(hhmm);
+  const SLOT_DURATION = 30;
+  const MAX_DAYS_AHEAD = 45;
+  const MIN_LEAD_MINUTES = 60;
+  const MOCK = new URLSearchParams(location.search).get("mock") === "1" || location.protocol === "file:";
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function hhmm(mins){ return pad(Math.floor(mins/60))+":"+pad(mins%60); }
+  function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function fmtLong(d){ return d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear()+", "+DAYS_LONG[d.getDay()]; }
+  function addDays(d,n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+  function sameDay(a,b){ return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  function cleanName(v){ return String(v||"").trim().replace(/\s+/g," "); }
+  function digits(v){ return String(v||"").replace(/\D/g,""); }
+  function makeRef(){
+    const bytes = new Uint8Array(8);
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(bytes);
+    else for (let i=0;i<8;i++) bytes[i] = Math.floor(Math.random()*256);
+    return Array.from(bytes, b => b.toString(16).padStart(2,"0")).join("");
+  }
 
   const TODAY = new Date();
   TODAY.setHours(0,0,0,0);
-  const LAST_DAY = new Date(TODAY);
-  LAST_DAY.setDate(LAST_DAY.getDate() + 45);
+  const LAST_DAY = addDays(TODAY, MAX_DAYS_AHEAD);
 
   const state = {
     step: 1,
     viewMonth: new Date(TODAY.getFullYear(), TODAY.getMonth(), 1),
-    selectedDate: new Date(TODAY),
+    selectedDate: null,
     selectedTime: null,
-    slotCounts: {}
+    counts: {},
+    blocked: {},
+    maxCapacity: 2,
+    loading: false,
+    apiError: "",
+    fetchSeq: 0,
+    submitting: false,
+    ref: null,
+    booking: null
   };
 
   const $ = id => document.getElementById(id);
@@ -420,35 +519,49 @@
     calendar:$("calendar"), monthLabel:$("monthLabel"),
     prevMonth:$("prevMonth"), nextMonth:$("nextMonth"),
     slotDate:$("slotDate"), slotCount:$("slotCount"), slotsWrap:$("slotsWrap"),
+    apiNotice:$("apiNotice"),
     selectionText:$("selectionText"), toForm:$("toForm"),
     recapDate:$("recapDate"), recapDetail:$("recapDetail"), backTo1:$("backTo1"),
     form:$("bookingForm"), submitBtn:$("submitBtn"), submitLabel:$("submitLabel"),
+    formError:$("formError"),
     parentName:$("parentName"), phone:$("phone"), studentName:$("studentName"), grade:$("grade"),
+    kvkk:$("kvkk"), kvkkWrap:$("kvkkWrap"), website:$("website"),
     sumStudent:$("sumStudent"), sumGrade:$("sumGrade"), sumParent:$("sumParent"),
-    sumPhone:$("sumPhone"), sumDate:$("sumDate"), sumTime:$("sumTime"), newBooking:$("newBooking")
+    sumPhone:$("sumPhone"), sumDate:$("sumDate"), sumTime:$("sumTime"), sumCode:$("sumCode"),
+    newBooking:$("newBooking")
   };
 
-  /* ---------- OTOMATİK 0 VE 0543 777 55 55 SINIRI ---------- */
-  el.phone.addEventListener("focus", () => {
-    if (!el.phone.value) el.phone.value = "0";
-  });
-  el.phone.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && el.phone.value === "0") e.preventDefault();
-  });
-  el.phone.addEventListener("input", (e) => {
-    let raw = e.target.value.replace(/\D/g, "");
-    if (!raw.startsWith("0")) raw = "0" + raw;
-    raw = raw.slice(0, 11);
+  /* ---------- Tarih / müsaitlik ---------- */
+  function isClosedDay(d){
+    if (d < TODAY || d > LAST_DAY) return true;
+    if (d.getDay() === 0) return true; // Pazar kapalı; Cumartesi açık
+    return false;
+  }
 
-    let formatted = "";
-    if (raw.length > 0) formatted += raw.slice(0, 4);
-    if (raw.length > 4) formatted += " " + raw.slice(4, 7);
-    if (raw.length > 7) formatted += " " + raw.slice(7, 9);
-    if (raw.length > 9) formatted += " " + raw.slice(9, 11);
-    e.target.value = formatted;
-  });
+  function hasFutureSlot(d){
+    if (!sameDay(d, TODAY)) return true;
+    const now = new Date();
+    const nowMinutes = now.getHours()*60 + now.getMinutes();
+    return SLOT_MINUTES.some(m => m >= nowMinutes + MIN_LEAD_MINUTES);
+  }
 
-  /* ---------- TAKVİM ---------- */
+  function pickInitialDay(){
+    let d = new Date(TODAY);
+    for (let i=0; i<=MAX_DAYS_AHEAD; i++){
+      if (!isClosedDay(d) && hasFutureSlot(d)) return d;
+      d = addDays(d,1);
+    }
+    return new Date(TODAY);
+  }
+
+  function isPastSlot(date, minutes){
+    if (date < TODAY) return true;
+    if (date > TODAY) return false;
+    const now = new Date();
+    return minutes < (now.getHours()*60 + now.getMinutes() + MIN_LEAD_MINUTES);
+  }
+
+  /* ---------- Takvim ---------- */
   function renderCalendar(){
     const m = state.viewMonth;
     el.monthLabel.textContent = MONTHS[m.getMonth()] + " " + m.getFullYear();
@@ -459,103 +572,184 @@
     el.nextMonth.disabled = m >= maxM;
 
     const first = new Date(m.getFullYear(), m.getMonth(), 1);
-    const offset = (first.getDay() + 6) % 7;
+    const offset = (first.getDay() + 6) % 7; // Pazartesi = 0
     const daysInMonth = new Date(m.getFullYear(), m.getMonth()+1, 0).getDate();
 
     let html = "";
-    for (let i=0;i<offset;i++) html += '<span class="day other"></span>';
+    for (let i=0; i<offset; i++) html += '<span class="day other" aria-hidden="true"></span>';
 
     for (let day=1; day<=daysInMonth; day++){
       const d = new Date(m.getFullYear(), m.getMonth(), day);
-      const isPast = d < TODAY || d > LAST_DAY;
-      const isSunday = d.getDay() === 0;
-      const closed = isPast || isSunday;
+      const closed = isClosedDay(d);
+      const classes = ["day", closed ? "closed" : "available"];
+      if (sameDay(d, TODAY)) classes.push("today");
+      if (sameDay(d, state.selectedDate)) classes.push("selected");
 
-      const classes = ["day"];
-      if (closed) classes.push("closed");
-      else classes.push("available");
-      if (d.getTime() === TODAY.getTime()) classes.push("today");
-      if (state.selectedDate && d.getTime() === state.selectedDate.getTime()) classes.push("selected");
-
-      html += `<button type="button" class="${classes.join(' ')}" data-date="${ymd(d)}" ${closed ? 'disabled' : ''}>
-                 <span>${day}</span>
-               </button>`;
+      html += '<button type="button" class="'+classes.join(" ")+'" data-date="'+ymd(d)+'" '+
+              (closed ? "disabled" : "")+' aria-label="'+fmtLong(d)+'" '+
+              (sameDay(d,state.selectedDate) ? 'aria-pressed="true"' : 'aria-pressed="false"')+'>'+
+              '<span>'+day+'</span></button>';
     }
+
+    const total = offset + daysInMonth;
+    const trailing = (7 - (total % 7)) % 7;
+    for (let i=1; i<=trailing; i++) html += '<span class="day other" aria-hidden="true"></span>';
+
     el.calendar.innerHTML = html;
 
     el.calendar.querySelectorAll("button.day[data-date]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const [y,month,d] = btn.dataset.date.split("-").map(Number);
-        selectDate(new Date(y, month-1, d));
+        const parts = btn.dataset.date.split("-").map(Number);
+        selectDate(new Date(parts[0], parts[1]-1, parts[2]));
       });
     });
   }
 
-  async function selectDate(date){
+  function selectDate(date){
     state.selectedDate = date;
     state.selectedTime = null;
+    state.booking = null;
     renderCalendar();
     updateSelectionBar();
-    await fetchSlots(ymd(date));
+    loadSlots(date);
   }
 
-  async function fetchSlots(dateStr){
-    el.slotsWrap.style.opacity = "0.4";
-    el.slotCount.textContent = "Kontrol ediliyor...";
+  /* ---------- Müsait saatler ---------- */
+  async function loadSlots(date){
+    if (!date) return;
+    const seq = ++state.fetchSeq;
+    state.loading = true;
+    state.apiError = "";
+    state.counts = {};
+    state.blocked = {};
+    renderSlots();
+
     try {
-      const res = await fetch(`${SCRIPT_URL}?date=${dateStr}&t=${Date.now()}`);
-      const data = await res.json();
-      state.slotCounts = data.slotCounts || {};
-    } catch(e) {
-      state.slotCounts = {};
+      let data;
+      if (MOCK){
+        await sleep(300);
+        const counts = {};
+        const dateStr = ymd(date);
+        SLOT_TIMES.forEach((t,i) => {
+          const n = (dateStr.charCodeAt(9) + i) % 6;
+          if (n === 0) counts[t] = 2;
+          else if (n === 1) counts[t] = 1;
+        });
+        data = { slotCounts: counts, blocked:{}, maxCapacity:2, mock:true };
+      } else {
+        data = await jsonp({ date: ymd(date), t: Date.now() });
+      }
+
+      if (seq !== state.fetchSeq) return;
+      if (!data || data.error){
+        throw new Error((data && data.message) || "Müsaitlik bilgisi alınamadı.");
+      }
+
+      state.counts = data.slotCounts || {};
+      state.blocked = data.blocked || {};
+      state.maxCapacity = Number(data.maxCapacity) || 2;
+    } catch (err){
+      if (seq !== state.fetchSeq) return;
+      const raw = String(err && err.message || "").trim();
+      state.apiError = (raw && !/^(timeout|network|non-json)$/i.test(raw) && raw.length < 180)
+        ? raw
+        : "Müsait saatler şu anda alınamıyor. Lütfen tekrar deneyin.";
+      state.selectedTime = null;
+      updateSelectionBar();
     } finally {
-      el.slotsWrap.style.opacity = "1";
-      renderSlots();
+      if (seq === state.fetchSeq){
+        state.loading = false;
+        renderSlots();
+      }
     }
   }
 
   function renderSlots(){
     const d = state.selectedDate;
-    el.slotDate.textContent = fmtLong(d);
+    el.slotDate.textContent = d ? fmtLong(d) : "—";
+
+    if (!d){
+      el.slotCount.textContent = "Takvimden gün seçiniz";
+      el.apiNotice.classList.add("hidden");
+      el.slotsWrap.innerHTML = '<div class="slots-state"><strong>Bir gün seçin</strong><span>Müsait saatleri görmek için takvimden gün seçin.</span></div>';
+      return;
+    }
+
+    if (state.loading){
+      el.slotCount.textContent = "Kontrol ediliyor…";
+      el.apiNotice.classList.add("hidden");
+      el.slotsWrap.innerHTML = '<div class="slots-state"><span class="spinner"></span><span>Müsait saatler kontrol ediliyor…</span></div>';
+      return;
+    }
+
+    if (state.apiError){
+      el.slotCount.textContent = "Müsaitlik bilgisi alınamadı";
+      el.apiNotice.classList.remove("hidden");
+      el.apiNotice.innerHTML = '<span></span><button type="button" id="retrySlots">Tekrar dene</button>';
+      el.apiNotice.querySelector("span").textContent = state.apiError;
+      const retry = $("retrySlots");
+      if (retry) retry.addEventListener("click", () => loadSlots(state.selectedDate));
+      el.slotsWrap.innerHTML = '<div class="slots-state"><strong>Bağlantı kurulamadı</strong><span>İnternet bağlantınızı kontrol edip tekrar deneyin.</span></div>';
+      return;
+    }
+
+    el.apiNotice.classList.add("hidden");
 
     const morning = SLOT_MINUTES.filter(m => m < 720);
     const afternoon = SLOT_MINUTES.filter(m => m >= 780);
+    let enabledCount = 0;
+    let selectedStillValid = false;
 
     const renderGroup = (title, items) => {
-      let gHtml = `<div class="slot-group"><h4>${title}</h4><div class="slot-grid">`;
+      let gHtml = '<div class="slot-group"><h4>'+title+'</h4><div class="slot-grid">';
       items.forEach(m => {
         const timeStr = hhmm(m);
-        const booked = state.slotCounts[timeStr] || 0;
-        const remain = 2 - booked;
-        const isFull = remain <= 0;
+        const past = isPastSlot(d, m);
+        const blocked = !!state.blocked[timeStr];
+        const booked = Number(state.counts[timeStr] || 0);
+        const remain = blocked ? 0 : Math.max(0, state.maxCapacity - booked);
         const isSelected = state.selectedTime === m;
 
         let statusText = "";
         let statusClass = "";
+        let disabled = false;
 
-        if (isFull) {
+        if (past){
+          statusText = "Geçti";
+          disabled = true;
+        } else if (remain <= 0){
           statusText = "Dolu";
-        } else if (remain === 1) {
-          statusText = "1 Müsait";
-          statusClass = "avail-half";
+          disabled = true;
         } else {
-          statusText = "2 Müsait";
-          statusClass = "avail-full";
+          statusText = remain + " Müsait";
+          statusClass = remain === 1 ? "avail-half" : "avail-full";
+          enabledCount++;
         }
 
-        gHtml += `<button type="button" class="slot ${isSelected ? 'selected' : ''}" 
-                    data-time="${m}" ${isFull ? 'disabled' : ''}>
-                    <strong>${timeStr}</strong>
-                    <span class="${statusClass}">${statusText}</span>
-                  </button>`;
+        if (isSelected && !disabled) selectedStillValid = true;
+
+        gHtml += '<button type="button" class="slot'+(isSelected && !disabled ? " selected" : "")+(past ? " past" : "")+'" '+
+                 'data-time="'+m+'" '+(disabled ? "disabled" : "")+' aria-pressed="'+(isSelected && !disabled ? "true" : "false")+'" '+
+                 'aria-label="'+hhmm(m)+' '+statusText+'">'+
+                 '<strong>'+timeStr+'</strong><span class="'+statusClass+'">'+statusText+'</span></button>';
       });
-      gHtml += `</div></div>`;
+      gHtml += '</div></div>';
       return gHtml;
     };
 
     el.slotsWrap.innerHTML = renderGroup("Sabah", morning) + renderGroup("Öğleden Sonra", afternoon);
 
-    el.slotsWrap.querySelectorAll("button.slot[data-time]").forEach(btn => {
+    if (state.selectedTime !== null && !selectedStillValid){
+      state.selectedTime = null;
+      updateSelectionBar();
+    }
+
+    if (enabledCount === 0){
+      el.slotsWrap.insertAdjacentHTML("beforeend",
+        '<div class="slots-state" style="min-height:auto;padding-top:14px;"><strong>Bu gün için uygun saat kalmadı</strong><span>Başka bir gün seçebilirsiniz.</span></div>');
+    }
+
+    el.slotsWrap.querySelectorAll("button.slot[data-time]:not([disabled])").forEach(btn => {
       btn.addEventListener("click", () => {
         state.selectedTime = Number(btn.dataset.time);
         renderSlots();
@@ -563,19 +757,19 @@
       });
     });
 
-    el.slotCount.textContent = "09:00 - 17:00 arası seanslar (Maksimum 2 Veli)";
+    el.slotCount.textContent = "09:00 - 17:00 arası • Maksimum " + state.maxCapacity + " veli";
   }
 
   function updateSelectionBar(){
     if (state.selectedDate && state.selectedTime !== null){
       const start = hhmm(state.selectedTime);
-      const end = hhmm(state.selectedTime + 30);
+      const end = hhmm(state.selectedTime + SLOT_DURATION);
       el.selectionText.classList.remove("is-empty");
-      el.selectionText.innerHTML = `<strong>${state.selectedDate.getDate()} ${MONTHS[state.selectedDate.getMonth()]} · ${start} - ${end}</strong><span>Bireysel Veli Görüşmesi</span>`;
+      el.selectionText.innerHTML = '<strong>'+state.selectedDate.getDate()+' '+MONTHS[state.selectedDate.getMonth()]+' · '+start+' - '+end+'</strong><span>Bireysel Veli Görüşmesi</span>';
       el.toForm.disabled = false;
     } else {
       el.selectionText.classList.add("is-empty");
-      el.selectionText.innerHTML = `<strong>Saat Seçilmedi</strong><span>Lütfen bir saat seçin.</span>`;
+      el.selectionText.innerHTML = '<strong>Saat Seçilmedi</strong><span>Lütfen bir saat seçin.</span>';
       el.toForm.disabled = true;
     }
   }
@@ -590,10 +784,344 @@
       s.classList.toggle("active", i === n);
       s.classList.toggle("done", i < n || n === 3);
     });
+    const target = n === 1 ? el.step1 : n === 2 ? el.step2 : el.step3;
+    requestAnimationFrame(() => {
+      const y = target.getBoundingClientRect().top + window.scrollY - 10;
+      window.scrollTo({ top: Math.max(0,y), behavior:"smooth" });
+    });
+    sendHeight();
   }
 
-  el.prevMonth.addEventListener("click", () => {
-    state.viewMonth = new Date(state.viewMonth.getFullYear(), state.viewMonth.getMonth()-1, 1);
-    renderCalendar();
+  /* ---------- API: JSONP (GET) ---------- */
+  function jsonp(params, timeout){
+    timeout = timeout || 12000;
+    return new Promise((resolve, reject) => {
+      const cb = "__ck_" + Math.random().toString(36).slice(2);
+      const query = new URLSearchParams(Object.assign({}, params, { callback: cb })).toString();
+      const script = document.createElement("script");
+      let done = false;
+
+      function cleanup(){
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        try { delete window[cb]; } catch(e){ window[cb] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+      const timer = setTimeout(() => { cleanup(); reject(new Error("timeout")); }, timeout);
+
+      window[cb] = data => { cleanup(); resolve(data); };
+      script.onerror = () => { cleanup(); reject(new Error("network")); };
+      script.src = SCRIPT_URL + (SCRIPT_URL.indexOf("?") === -1 ? "?" : "&") + query;
+      document.body.appendChild(script);
+    });
+  }
+
+  /* ---------- API: POST (fetch + form fallback) ---------- */
+  async function postJson(payload){
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        redirect: "follow",
+        signal: controller.signal
+      });
+      const text = await res.text();
+      let data = null;
+      try { data = JSON.parse(text); } catch(e){ /* HTML / login sayfası */ }
+      if (data && data.status) return data;
+      throw new Error("non-json");
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function postViaHiddenForm(payload){
+    const frameName = "ck_post_" + Date.now();
+    const iframe = document.createElement("iframe");
+    iframe.name = frameName;
+    iframe.style.display = "none";
+    iframe.setAttribute("aria-hidden","true");
+    document.body.appendChild(iframe);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = SCRIPT_URL;
+    form.target = frameName;
+    form.style.display = "none";
+
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "payload";
+    hidden.value = JSON.stringify(payload);
+    form.appendChild(hidden);
+
+    const ref = document.createElement("input");
+    ref.type = "hidden";
+    ref.name = "ref";
+    ref.value = payload.ref;
+    form.appendChild(ref);
+
+    document.body.appendChild(form);
+    form.submit();
+
+    setTimeout(() => { form.remove(); iframe.remove(); }, 60000);
+  }
+
+  async function pollRef(ref, timeoutMs){
+    const deadline = Date.now() + (timeoutMs || 20000);
+    while (Date.now() < deadline){
+      await sleep(1000);
+      let result = null;
+      try { result = await jsonp({ ref: ref, t: Date.now() }, 6000); } catch(e){ continue; }
+      if (!result) continue;
+      if (result.status === "error") throw new Error(result.message || "Randevu oluşturulamadı.");
+      if (result.found && result.status === "success") return result;
+    }
+    throw new Error("Sunucudan yanıt alınamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.");
+  }
+
+  async function submitViaFallback(payload){
+    // CORS engeli varsa fetch yanıtı okunamaz; no-cors ile isteği yine de gönderip
+    // sonucu JSONP ile (ref üzerinden) doğruluyoruz. Aynı ref ikinci kez kayıt açmaz.
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+    } catch(e){
+      postViaHiddenForm(payload);
+    }
+    return await pollRef(payload.ref, 20000);
+  }
+
+  async function submitBooking(payload){
+    try {
+      const data = await postJson(payload);
+      if (data.status === "error") return data;
+      if (data.status === "success") return data;
+      throw new Error("non-json");
+    } catch (err){
+      return await submitViaFallback(payload);
+    }
+  }
+
+  /* ---------- Form ---------- */
+  function formatPhone(value){
+    let d = digits(value);
+    if (d.startsWith("90") && d.length > 10) d = d.slice(2);
+    if (d && !d.startsWith("0")) d = "0" + d;
+    d = d.slice(0,11);
+    if (!d) return "";
+    let out = d.slice(0,4);
+    if (d.length > 4) out += " " + d.slice(4,7);
+    if (d.length > 7) out += " " + d.slice(7,9);
+    if (d.length > 9) out += " " + d.slice(9,11);
+    return out;
+  }
+
+  function setError(id, on, message){
+    const field = $(id);
+    const wrap = field ? field.closest(".field") : null;
+    if (!wrap) return;
+    wrap.classList.toggle("invalid", on);
+    field.setAttribute("aria-invalid", on ? "true" : "false");
+    if (message){
+      const err = $("err-" + id);
+      if (err) err.textContent = message;
+    }
+  }
+
+  function validateForm(){
+    let firstBad = null;
+    const checks = [
+      [el.studentName, cleanName(el.studentName.value).split(" ").filter(Boolean).length >= 2, "Lütfen öğrencinin adını ve soyadını girin."],
+      [el.grade, !!el.grade.value, "Lütfen sınıf / kademe seçin."],
+      [el.parentName, cleanName(el.parentName.value).split(" ").filter(Boolean).length >= 2, "Lütfen velinin adını ve soyadını girin."],
+      [el.phone, /^0\d{10}$/.test(digits(el.phone.value)), "Geçerli bir telefon numarası girin."]
+    ];
+
+    checks.forEach(([field, ok, msg]) => {
+      setError(field.id, !ok, msg);
+      if (!ok && !firstBad) firstBad = field;
+    });
+
+    const kvkkOk = el.kvkk.checked;
+    el.kvkkWrap.classList.toggle("invalid", !kvkkOk);
+    if (!kvkkOk && !firstBad) firstBad = el.kvkk;
+
+    if (firstBad){
+      firstBad.focus({ preventScroll:false });
+      firstBad.scrollIntoView({ behavior:"smooth", block:"center" });
+      return false;
+    }
+    return true;
+  }
+
+  function showFormError(message){
+    el.formError.textContent = message;
+    el.formError.classList.remove("hidden");
+    el.formError.scrollIntoView({ behavior:"smooth", block:"center" });
+  }
+  function hideFormError(){
+    el.formError.classList.add("hidden");
+    el.formError.textContent = "";
+  }
+
+  el.phone.addEventListener("focus", () => {
+    if (!el.phone.value) el.phone.value = "0";
   });
-  el.nextMonth
+  el.phone.addEventListener("blur", () => {
+    if (el.phone.value === "0") el.phone.value = "";
+  });
+  el.phone.addEventListener("input", e => {
+    e.target.value = formatPhone(e.target.value);
+    setError("phone", false);
+  });
+
+  [el.studentName, el.parentName, el.grade].forEach(f => {
+    f.addEventListener("input", () => setError(f.id, false));
+    f.addEventListener("change", () => setError(f.id, false));
+  });
+  el.kvkk.addEventListener("change", () => {
+    if (el.kvkk.checked) el.kvkkWrap.classList.remove("invalid");
+  });
+
+  el.form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (state.submitting) return;
+    if (el.website.value) return; // honeypot
+    if (!validateForm()) return;
+    if (!state.selectedDate || state.selectedTime === null){
+      setStep(1);
+      return;
+    }
+
+    hideFormError();
+    state.submitting = true;
+    state.ref = makeRef();
+    el.submitBtn.disabled = true;
+    el.submitLabel.textContent = "Kaydediliyor…";
+
+    const payload = {
+      tarih: ymd(state.selectedDate),
+      saat: hhmm(state.selectedTime),
+      veliAd: cleanName(el.parentName.value),
+      telefon: digits(el.phone.value),
+      ogrenciAd: cleanName(el.studentName.value),
+      kademe: el.grade.value,
+      kvkk: true,
+      ref: state.ref
+    };
+
+    try {
+      let result;
+      if (MOCK){
+        await sleep(700);
+        result = { status:"success", code:"RV-DEMO-" + state.ref.slice(0,4).toUpperCase() };
+      } else {
+        result = await submitBooking(payload);
+      }
+
+      if (!result || result.status !== "success"){
+        throw new Error((result && result.message) || "Randevu oluşturulamadı. Lütfen tekrar deneyin.");
+      }
+
+      state.booking = result;
+      el.sumStudent.textContent = payload.ogrenciAd;
+      el.sumGrade.textContent = payload.kademe;
+      el.sumParent.textContent = payload.veliAd;
+      el.sumPhone.textContent = el.phone.value;
+      el.sumDate.textContent = fmtLong(state.selectedDate);
+      el.sumTime.textContent = hhmm(state.selectedTime) + " - " + hhmm(state.selectedTime + SLOT_DURATION);
+      el.sumCode.textContent = result.code || "—";
+
+      setStep(3);
+    } catch (err){
+      showFormError(err && err.message ? err.message : "Randevu oluşturulamadı. Lütfen danışma ekibimizi arayın.");
+    } finally {
+      state.submitting = false;
+      el.submitBtn.disabled = false;
+      el.submitLabel.textContent = "Randevuyu Onayla";
+      sendHeight();
+    }
+  });
+
+  el.toForm.addEventListener("click", () => {
+    if (!state.selectedDate || state.selectedTime === null) return;
+    el.recapDate.textContent = fmtLong(state.selectedDate);
+    el.recapDetail.textContent = hhmm(state.selectedTime) + " - " + hhmm(state.selectedTime + SLOT_DURATION) + " · Bireysel Veli Görüşmesi";
+    hideFormError();
+    setStep(2);
+    setTimeout(() => { el.studentName.focus(); }, 350);
+  });
+
+  el.backTo1.addEventListener("click", () => {
+    hideFormError();
+    setStep(1);
+  });
+
+  el.newBooking.addEventListener("click", () => {
+    el.form.reset();
+    el.studentName.value = "";
+    el.parentName.value = "";
+    el.phone.value = "";
+    el.grade.value = "";
+    el.website.value = "";
+    [el.studentName, el.parentName, el.phone, el.grade].forEach(f => setError(f.id, false));
+    el.kvkkWrap.classList.remove("invalid");
+    hideFormError();
+    state.selectedTime = null;
+    state.booking = null;
+    state.ref = null;
+    state.selectedDate = pickInitialDay();
+    state.viewMonth = new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), 1);
+    renderCalendar();
+    updateSelectionBar();
+    setStep(1);
+    loadSlots(state.selectedDate);
+  });
+
+  el.prevMonth.addEventListener("click", () => {
+    const target = new Date(state.viewMonth.getFullYear(), state.viewMonth.getMonth()-1, 1);
+    if (target < new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)) return;
+    state.viewMonth = target;
+    renderCalendar();
+    sendHeight();
+  });
+
+  el.nextMonth.addEventListener("click", () => {
+    const target = new Date(state.viewMonth.getFullYear(), state.viewMonth.getMonth()+1, 1);
+    if (target > new Date(LAST_DAY.getFullYear(), LAST_DAY.getMonth(), 1)) return;
+    state.viewMonth = target;
+    renderCalendar();
+    sendHeight();
+  });
+
+  /* ---------- Iframe yüksekliği ---------- */
+  let lastHeight = 0;
+  function sendHeight(){
+    const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    if (Math.abs(height - lastHeight) < 2) return;
+    lastHeight = height;
+    try { parent.postMessage({ type:"cozum-randevu-height", height: height }, "*"); } catch(e){}
+  }
+  window.addEventListener("resize", sendHeight);
+  if ("ResizeObserver" in window) new ResizeObserver(sendHeight).observe(document.body);
+
+  /* ---------- Başlat ---------- */
+  state.selectedDate = pickInitialDay();
+  state.viewMonth = new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), 1);
+  renderCalendar();
+  updateSelectionBar();
+  loadSlots(state.selectedDate);
+  sendHeight();
+})();
+</script>
+</body>
+</html>
